@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Comanda{
+  id       Int           @id @default(autoincrement())
+  status   ComandaStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  
+  orders Order[]
+}
+
+model Order {
+  id          Int           @id @default(autoincrement())
+  paidAt      DateTime?
+  canceledAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  comanda   Comanda      @relation(fields: [comandaId], references: [id])
+  comandaId Int
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@unique([orderId, productId])
+}
+
+model Product {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+  price       Float
+
+  OrderItem OrderItem[]
+}
+
+enum ComandaStatus {
+  OPEN
+  OCCUPIED
+}
