@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod"
 import { baseProcedure, createTRPCRouter } from "../init"
 
@@ -73,7 +74,13 @@ export const productRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.product.create({ data: input })
+      try {
+        return ctx.db.product.create({ data: input })
+      } catch (error: any) {
+        if (error.message.includes("unique constraint")) {
+          throw new Error("Produto já existe com esse nome")
+        }
+      }
     }),
 
   // ✅ Atualizar produto
@@ -82,7 +89,7 @@ export const productRouter = createTRPCRouter({
       z.object({
         id: z.number(),
         name: z.string(),
-        description: z.string(),
+        description: z.string().optional(),
         price: z.number(),
       }),
     )

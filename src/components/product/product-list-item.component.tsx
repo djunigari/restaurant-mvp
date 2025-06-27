@@ -4,6 +4,7 @@ import { trpc } from "@/app/trpc/client"
 import { Product } from "@/generated/prisma"
 import { toast } from "sonner"
 import { Button } from "../ui/button"
+import { ProductEditDialog } from "./product-edit-dialog"
 
 interface ProductListItemComponentProps {
   product: Product
@@ -40,14 +41,17 @@ export function ProductListItemComponent({
         <p className="font-semibold mt-2">R$ {product.price.toFixed(2)}</p>
       </div>
 
-      <Button
-        variant="destructive"
-        size="sm"
-        onClick={handleDelete}
-        disabled={deleteProduct.isPending}
-      >
-        {deleteProduct.isPending ? "Removendo..." : "Excluir"}
-      </Button>
+      <div className="flex gap-2">
+        <ProductEditDialog product={product} />
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={handleDelete}
+          disabled={deleteProduct.isPending}
+        >
+          {deleteProduct.isPending ? "Removendo..." : "Excluir"}
+        </Button>
+      </div>
     </div>
   )
 }

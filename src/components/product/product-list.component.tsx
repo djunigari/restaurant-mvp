@@ -37,7 +37,7 @@ export function ProductListComponent({
         </Button>
 
         <span>
-          Página {pageIndex + 1} de {totalPages}
+          {pageIndex + 1} / {totalPages}
         </span>
 
         <Button
