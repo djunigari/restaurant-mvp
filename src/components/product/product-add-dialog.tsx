@@ -13,13 +13,16 @@ import {
 import { useState } from "react"
 import { ProductFormComponent } from "./product-form.component"
 
-export function ProductAddDialog() {
+interface ProductAddDialogProps {
+  className?: string
+}
+export function ProductAddDialog(props: ProductAddDialogProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Adicionar</Button>
+        <Button className={props.className}>Adicionar</Button>
       </DialogTrigger>
 
       <DialogContent>

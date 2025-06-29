@@ -10,7 +10,8 @@ export const productRouter = createTRPCRouter({
         .object({
           pageIndex: z.number().optional().default(0),
           pageSize: z.number().optional().default(10),
-          nameFilter: z.string().optional().default(""),
+          filter: z.string().optional().default(""),
+          typeFilter: z.enum(["ID", "Name"]).optional().default("Name"),
           sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
         })
         .optional(),
@@ -19,29 +20,29 @@ export const productRouter = createTRPCRouter({
       const {
         pageIndex = 0,
         pageSize = 10,
-        nameFilter = "",
+        filter = "",
         sortOrder = "desc",
       } = input ?? {}
       try {
+        const where = {} as any
+        if (input?.typeFilter === "ID" && filter && filter.trim() != "") {
+          console.log("aaaaa")
+          where.id = Number(filter)
+        } else {
+          where.name = {
+            contains: filter,
+            // mode: "insensitive", // Uncomment if you want case-insensitive search
+          }
+        }
         const [data, totalCount] = await Promise.all([
           ctx.db.product.findMany({
-            where: {
-              name: {
-                contains: nameFilter,
-                // mode: "insensitive",
-              },
-            },
+            where,
             skip: pageIndex * pageSize,
             take: pageSize,
             orderBy: { id: sortOrder },
           }),
           ctx.db.product.count({
-            where: {
-              name: {
-                contains: nameFilter,
-                // mode: "insensitive",
-              },
-            },
+            where,
           }),
         ])
 
