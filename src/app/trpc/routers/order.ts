@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 import { baseProcedure, createTRPCRouter } from "../init"
 
@@ -76,7 +77,16 @@ export const orderRouter = createTRPCRouter({
         where: { id: input.orderId },
       })
 
-      if (!order) throw new Error("Order not found")
+      if (!order)
+        throw new TRPCError({ code: "NOT_FOUND", message: "Order not found" })
+
+      // Verifica se o produto existe
+      const product = await ctx.db.product.findUnique({
+        where: { id: input.productId },
+      })
+
+      if (!product)
+        throw new TRPCError({ code: "NOT_FOUND", message: "Product not found" })
 
       // Verifica se o item já existe na ordem
       const existingItem = await ctx.db.orderItem.findUnique({
@@ -125,7 +135,7 @@ export const orderRouter = createTRPCRouter({
       })
 
       if (!existingItem) {
-        throw new Error("Order item not found")
+        throw new TRPCError({ code: "NOT_FOUND", message: "Order not found" })
       }
 
       const newQuantity = existingItem.quantity - input.amount
@@ -135,12 +145,15 @@ export const orderRouter = createTRPCRouter({
         await ctx.db.orderItem.delete({
           where: { id: existingItem.id },
         })
+        return { removed: true }
       } else {
         // Senão, atualiza com a nova quantidade
         await ctx.db.orderItem.update({
           where: { id: existingItem.id },
           data: { quantity: newQuantity },
         })
+
+        return { removed: false, newQuantity }
       }
     }),
 })

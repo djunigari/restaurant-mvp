@@ -14,8 +14,7 @@ datasource db {
 model Comanda{
   id       Int           @id @default(autoincrement())
   status   ComandaStatus @default(OPEN)
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  deletedAt  DateTime?
   
   orders Order[]
 }
@@ -40,6 +39,7 @@ model OrderItem {
   orderId   Int
   product   Product @relation(fields: [productId], references: [id])
   productId Int
+  deletedAt  DateTime?
 
   @@unique([orderId, productId])
 }
@@ -49,6 +49,7 @@ model Product {
   name        String @unique
   description String
   price       Float
+  deletedAt  DateTime?
 
   OrderItem OrderItem[]
 }

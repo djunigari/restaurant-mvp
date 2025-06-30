@@ -77,7 +77,7 @@ function FilterInput({
   onSearch: () => void
 }) {
   return (
-    <div className="w-full flex border rounded-md overflow-hidden">
+    <div className="w-full flex border rounded-md overflow-hidden shadow-sm">
       <label htmlFor="filter" className="sr-only">
         Filtrar por nome do produto ou ID
       </label>
@@ -95,7 +95,9 @@ function FilterInput({
         type={typeFilter === "ID" ? "number" : "text"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Digite o nome do produto"
+        placeholder={
+          typeFilter === "ID" ? "Filtrar por ID" : "Filtrar por nome"
+        }
         className="flex-1 outline-none px-2 py-1 border-l border-r-0 focus:ring-0"
       />
 

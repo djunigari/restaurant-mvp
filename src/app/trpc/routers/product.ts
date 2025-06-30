@@ -26,7 +26,6 @@ export const productRouter = createTRPCRouter({
       try {
         const where = {} as any
         if (input?.typeFilter === "ID" && filter && filter.trim() != "") {
-          console.log("aaaaa")
           where.id = Number(filter)
         } else {
           where.name = {
