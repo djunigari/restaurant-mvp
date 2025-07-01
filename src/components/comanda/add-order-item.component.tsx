@@ -39,34 +39,37 @@ export function AddOrderItem({
 
   return (
     <div className="mt-4 space-y-2">
-      <div className="flex gap-2 items-center">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <ProductSearchDialog onSelect={(id) => setProductId(String(id))} />
-        <Input
-          type="number"
-          placeholder="ID do produto"
-          value={productId}
-          onChange={(e) => setProductId(e.target.value)}
-          className="w-40"
-        />
-        <Input
-          type="number"
-          placeholder="Qtd"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-          className="w-24"
-        />
-        <Button
-          onClick={() =>
-            addItem.mutate({
-              orderId,
-              productId: Number(productId),
-              amount,
-            })
-          }
-          disabled={!productId || amount < 1}
-        >
-          Adicionar
-        </Button>
+        <div className="flex gap-2">
+          <Input
+            type="number"
+            placeholder="ID do produto"
+            value={productId}
+            onChange={(e) => setProductId(e.target.value)}
+            className="w-40"
+          />
+          <Input
+            type="number"
+            placeholder="Qtd"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="w-24"
+          />
+          <Button
+            onClick={() =>
+              addItem.mutate({
+                orderId,
+                productId: Number(productId),
+                amount,
+              })
+            }
+            disabled={!productId || amount < 1}
+          >
+            <span className="hidden sm:inline">Adicionar item</span>
+            <span className="sm:hidden">+</span>
+          </Button>
+        </div>
       </div>
     </div>
   )

@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button"
 import { Comanda } from "@/generated/prisma"
+import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { Badge } from "../ui/badge"
 
 export function ComandaListComponent({
   data,
@@ -17,12 +19,28 @@ export function ComandaListComponent({
 }) {
   return (
     <div className="space-y-4">
-      {data.map((comanda) => (
-        <Link href={`/comandas/${comanda.id}`} key={comanda.id}>
-          <div>ID: {comanda.id}</div>
-          <div>Status: {comanda.status}</div>
-        </Link>
-      ))}
+      <div className="flex flex-wrap gap-4">
+        {data.map((comanda) => (
+          <Link
+            href={`/comandas/${comanda.id}`}
+            key={comanda.id}
+            className={cn(
+              `flex flex-col gap-2 p-4 border rounded  
+              transition-colors space-x-2 w-[200px] text-center
+              `,
+              {
+                "bg-blue-100 border-blue-200 hover:bg-blue-50":
+                  comanda.status === "OPEN",
+                "bg-orange-100 border-orange-200 hover:bg-orange-50":
+                  comanda.status === "OCCUPIED",
+              },
+            )}
+          >
+            <Badge>{comanda.id}</Badge>
+            <span className="font-semibold">{comanda.status}</span>
+          </Link>
+        ))}
+      </div>
 
       {/* Paginação */}
       <div className="flex justify-center gap-2 mt-4">

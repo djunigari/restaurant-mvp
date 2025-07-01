@@ -19,14 +19,11 @@ export function ProductSearchDialog({
 }) {
   const [search, setSearch] = useState("")
   const [open, setOpen] = useState(false)
-  const { data, refetch, isFetching } = trpc.product.getAll.useQuery(
-    {
-      pageIndex: 0,
-      filter: search,
-      typeFilter: "Name",
-    },
-    { enabled: false },
-  )
+  const { data, refetch, isFetching } = trpc.product.getAll.useQuery({
+    pageIndex: 0,
+    filter: search,
+    typeFilter: "Name",
+  })
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
