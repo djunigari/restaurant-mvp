@@ -1,8 +1,10 @@
 "use client"
 
 import { trpc } from "@/app/trpc/client"
+
 import { Button } from "@/components/ui/button"
-import { CheckCircle, Clock, RotateCcw, XCircle } from "lucide-react"
+import { RotateCcw } from "lucide-react"
+import { OrderList } from "../order/order-list.component"
 
 export function ComandaHistory({ id }: { id: number }) {
   const { data, isLoading, refetch, isRefetching } =
@@ -27,22 +29,7 @@ export function ComandaHistory({ id }: { id: number }) {
         </Button>
       </div>
 
-      <ul className="list-none pl-0 space-y-2">
-        {data.map((order) => (
-          <li key={order.id} className="flex items-center gap-2">
-            {order.paidAt ? (
-              <CheckCircle className="h-5 w-5 text-green-600" />
-            ) : order.canceledAt ? (
-              <XCircle className="h-5 w-5 text-red-600" />
-            ) : (
-              <Clock className="h-5 w-5 text-yellow-500" />
-            )}
-            <span>
-              #{order.id} - {new Date(order.createdAt).toLocaleString()}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <OrderList orders={data} />
     </div>
   )
 }

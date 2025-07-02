@@ -4,14 +4,37 @@ import { z } from "zod"
 import { baseProcedure, createTRPCRouter } from "../init"
 
 export const orderRouter = createTRPCRouter({
-  getAll: baseProcedure.query(async ({ ctx }) => {
-    return ctx.db.order.findMany({
-      include: {
-        comanda: true,
-      },
-      orderBy: { id: "desc" },
-    })
-  }),
+  getAll: baseProcedure
+    .input(
+      z
+        .object({
+          id: z.number().optional(),
+          comandaId: z.number().optional(),
+          from: z.string().datetime().optional(), // ISO string
+          to: z.string().datetime().optional(), // ISO string
+        })
+        .optional(),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.order.findMany({
+        where: {
+          ...(input?.id ? { id: input.id } : {}),
+          ...(input?.comandaId ? { comandaId: input.comandaId } : {}),
+          ...(input?.from || input?.to
+            ? {
+                createdAt: {
+                  ...(input?.from ? { gte: new Date(input.from) } : {}),
+                  ...(input?.to ? { lte: new Date(input.to) } : {}),
+                },
+              }
+            : {}),
+        },
+        include: {
+          comanda: true,
+        },
+        orderBy: { id: "desc" },
+      })
+    }),
 
   getAllByComandaId: baseProcedure
     .input(z.number())
