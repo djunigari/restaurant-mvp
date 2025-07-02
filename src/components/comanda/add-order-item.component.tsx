@@ -15,11 +15,14 @@ export function AddOrderItem({
   const [productId, setProductId] = useState("")
   const [amount, setAmount] = useState(1)
 
+  const utils = trpc.useUtils()
+
   const addItem = trpc.order.addOrderItem.useMutation({
     onSuccess: () => {
       onAdded()
       setProductId("")
       setAmount(1)
+      utils.order.getCurrentByComandaId.invalidate()
       toast.success("Item adicionado com sucesso!")
     },
     onError: (error) => {

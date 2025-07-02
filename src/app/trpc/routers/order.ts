@@ -1,3 +1,4 @@
+import { ComandaStatus } from "@/generated/prisma"
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 import { baseProcedure, createTRPCRouter } from "../init"
@@ -12,12 +13,41 @@ export const orderRouter = createTRPCRouter({
     })
   }),
 
+  getAllByComandaId: baseProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      return ctx.db.order.findMany({
+        where: {
+          comandaId: input,
+        },
+        orderBy: { id: "desc" },
+      })
+    }),
+
   getById: baseProcedure.input(z.number()).query(async ({ ctx, input }) => {
     return ctx.db.order.findUnique({
       where: { id: input },
       include: { comanda: true, items: { include: { product: true } } },
     })
   }),
+
+  getCurrentByComandaId: baseProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      return ctx.db.order.findFirst({
+        where: {
+          comandaId: input,
+          paidAt: null,
+          canceledAt: null,
+        },
+        include: {
+          items: {
+            include: { product: true },
+          },
+        },
+        orderBy: { id: "desc" },
+      })
+    }),
 
   start: baseProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
     const comanda = await ctx.db.comanda.update({
@@ -41,9 +71,9 @@ export const orderRouter = createTRPCRouter({
       data: { paidAt: new Date() },
     })
 
-    ctx.db.comanda.update({
+    await ctx.db.comanda.update({
       where: { id: order.comandaId },
-      data: { status: "OPEN" },
+      data: { status: ComandaStatus.OPEN },
     })
 
     return
@@ -55,11 +85,12 @@ export const orderRouter = createTRPCRouter({
       data: { canceledAt: new Date() },
     })
 
-    ctx.db.comanda.update({
+    const res = await ctx.db.comanda.update({
       where: { id: order.comandaId },
-      data: { status: "OPEN" },
+      data: { status: ComandaStatus.OPEN },
     })
 
+    console.log("Comanda updated after canceling order:", res)
     return
   }),
 

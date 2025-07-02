@@ -1,8 +1,8 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Comanda } from "@/generated/prisma"
 import { cn } from "@/lib/utils"
+import { Comanda } from "@/types/comanda"
 import Link from "next/link"
 import { Badge } from "../ui/badge"
 

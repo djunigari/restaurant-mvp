@@ -63,13 +63,6 @@ export const comandaRouter = createTRPCRouter({
   getById: baseProcedure.input(z.number()).query(async ({ ctx, input }) => {
     return ctx.db.comanda.findUnique({
       where: { id: input },
-      include: {
-        orders: {
-          include: {
-            items: { include: { product: true } },
-          },
-        },
-      },
     })
   }),
 

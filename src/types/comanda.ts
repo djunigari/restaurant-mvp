@@ -6,5 +6,5 @@ export interface Comanda {
   id: number
   status: ComandaStatus
   deletedAt: string | null
-  orders: Order[]
+  orders?: Order[]
 }
