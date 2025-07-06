@@ -31,7 +31,7 @@ export default function ComandaListPage() {
 
   return (
     <MaxWidthWrapper>
-      <div className="p-4 space-y-8">
+      <div className="flex flex-col pt-4 space-y-8">
         <h1 className="text-xl font-bold mb-4">Comandas</h1>
         <div className="flex flex-col gap-2 sm:flex-row">
           <FilterInput
@@ -90,10 +90,8 @@ function FilterInput({
             <SelectItem value="Status">Status</SelectItem>
           </SelectContent>
         </Select>
-      </div>
 
-      {typeFilter === "ID" && (
-        <div className="flex w-full">
+        {typeFilter === "ID" ? (
           <input
             id="filter"
             type="number"
@@ -102,43 +100,43 @@ function FilterInput({
             placeholder="Filtrar por ID"
             className="flex-1 outline-none px-2 py-1 border focus:ring-0"
           />
-        </div>
-      )}
+        ) : null}
 
-      {typeFilter === "Status" && (
-        <div className="flex gap-4 items-center mx-2">
-          <label className="flex items-center gap-2">
-            <Checkbox
-              checked={value.includes("OPEN")}
-              onCheckedChange={(checked) => {
-                let next = value.split(",").filter(Boolean)
-                if (checked) {
-                  next.push("OPEN")
-                } else {
-                  next = next.filter((v) => v !== "OPEN")
-                }
-                onChange(next.join(","))
-              }}
-            />
-            <span>Open</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <Checkbox
-              checked={value.includes("OCCUPIED")}
-              onCheckedChange={(checked) => {
-                let next = value.split(",").filter(Boolean)
-                if (checked) {
-                  next.push("OCCUPIED")
-                } else {
-                  next = next.filter((v) => v !== "OCCUPIED")
-                }
-                onChange(next.join(","))
-              }}
-            />
-            <span>Occupied</span>
-          </label>
-        </div>
-      )}
+        {typeFilter === "Status" && (
+          <div className="flex gap-4 items-center mx-2">
+            <label className="flex items-center gap-2">
+              <Checkbox
+                checked={value.includes("OPEN")}
+                onCheckedChange={(checked) => {
+                  let next = value.split(",").filter(Boolean)
+                  if (checked) {
+                    next.push("OPEN")
+                  } else {
+                    next = next.filter((v) => v !== "OPEN")
+                  }
+                  onChange(next.join(","))
+                }}
+              />
+              <span>Open</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <Checkbox
+                checked={value.includes("OCCUPIED")}
+                onCheckedChange={(checked) => {
+                  let next = value.split(",").filter(Boolean)
+                  if (checked) {
+                    next.push("OCCUPIED")
+                  } else {
+                    next = next.filter((v) => v !== "OCCUPIED")
+                  }
+                  onChange(next.join(","))
+                }}
+              />
+              <span>Occupied</span>
+            </label>
+          </div>
+        )}
+      </div>
       <Button
         onClick={onSearch}
         variant={"secondary"}

@@ -1,5 +1,6 @@
 "use client"
 // ^-- to make sure we can mount the Provider from a server component
+import { getFingerprint, getOrCreateDeviceId } from "@/lib/device"
 import type { QueryClient } from "@tanstack/react-query"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { httpBatchLink } from "@trpc/client"
@@ -41,6 +42,16 @@ export function TRPCProvider(
       links: [
         httpBatchLink({
           url: getUrl(),
+          async headers() {
+            // aqui vai garantir deviceId e fingerprint
+            const deviceId = await getOrCreateDeviceId()
+            const fingerprint = await getFingerprint()
+
+            return {
+              "x-device-id": deviceId,
+              "x-device-fingerprint": fingerprint,
+            }
+          },
         }),
       ],
     }),

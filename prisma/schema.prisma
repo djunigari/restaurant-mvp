@@ -58,3 +58,12 @@ enum ComandaStatus {
   OPEN
   OCCUPIED
 }
+
+model Device {
+  id          String   @id @default(uuid())
+  name        String
+  fingerprint String
+  authorized  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

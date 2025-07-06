@@ -18,15 +18,15 @@ export function ComandaListComponent({
   onPageChange: (page: number) => void
 }) {
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap gap-4 px-1">
         {data.map((comanda) => (
           <Link
             href={`/comandas/${comanda.id}`}
             key={comanda.id}
             className={cn(
               `flex flex-col gap-2 p-4 border rounded  
-              transition-colors space-x-2 w-[150px] text-center
+              transition-colors space-x-2 w-[145px] text-center
               `,
               {
                 "bg-blue-100 border-blue-200 hover:bg-blue-50":
