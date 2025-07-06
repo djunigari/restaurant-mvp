@@ -28,7 +28,7 @@ export default function ComandaPage() {
 
   return (
     <MaxWidthWrapper>
-      <ComandaStatusHeader id={comanda.id} status={comanda.status} />
+      <ComandaStatusHeader id={comanda.id} />
 
       <Tabs defaultValue="current" className="w-full mt-6">
         <TabsList>

@@ -25,9 +25,8 @@ export function ComandaHistory({ id }: { id: number }) {
     })
 
   if (isLoading) return <span>Carregando histórico...</span>
-  if (!data?.totalCount || data.totalCount === 0)
-    return <span>Sem pedidos anteriores.</span>
-  const totalPages = Math.ceil(data.totalCount / pageSize)
+
+  const totalPages = Math.ceil((data?.totalCount || 0) / pageSize)
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
@@ -55,28 +54,34 @@ export function ComandaHistory({ id }: { id: number }) {
           Filtrar
         </Button>
       </div>
-      <OrderList orders={data.items} />
-      <div className="flex justify-center items-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={pageIndex === 0}
-          onClick={() => setPageIndex(pageIndex - 1)}
-        >
-          Anterior
-        </Button>
+      {!data?.totalCount || data.totalCount === 0 ? (
+        <span>Sem pedidos anteriores.</span>
+      ) : (
+        <>
+          <OrderList orders={data.items} />
+          <div className="flex justify-center items-center gap-2 mt-4">
+            <Button
+              variant="outline"
+              disabled={pageIndex === 0}
+              onClick={() => setPageIndex(pageIndex - 1)}
+            >
+              Anterior
+            </Button>
 
-        <span>
-          {pageIndex + 1} / {totalPages}
-        </span>
+            <span>
+              {pageIndex + 1} / {totalPages}
+            </span>
 
-        <Button
-          variant="outline"
-          disabled={pageIndex + 1 >= totalPages}
-          onClick={() => setPageIndex(pageIndex + 1)}
-        >
-          Próximo
-        </Button>
-      </div>
+            <Button
+              variant="outline"
+              disabled={pageIndex + 1 >= totalPages}
+              onClick={() => setPageIndex(pageIndex + 1)}
+            >
+              Próximo
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   )
 }

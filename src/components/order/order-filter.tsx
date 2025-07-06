@@ -1,61 +1,44 @@
-"use client"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { buildISO } from "@/lib/data-time"
-import { useState } from "react"
 import { DateTimePicker } from "../shared/date-time-picker"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
 
 export function OrderFilter({
-  onFilterChange,
+  value,
+  onChange,
+  onFilter,
 }: {
-  onFilterChange: (filter: {
-    id?: number
-    comandaId?: number
-    from?: string
-    to?: string
-  }) => void
+  value: {
+    id: string
+    comandaId: string
+    from: { date?: Date; time?: string }
+    to: { date?: Date; time?: string }
+  }
+  onChange: (val: typeof value) => void
+  onFilter: () => void
 }) {
-  const [id, setId] = useState("")
-  const [comandaId, setComandaId] = useState("")
-  const [from, setFrom] = useState<{ date?: Date; time?: string }>({})
-  const [to, setTo] = useState<{ date?: Date; time?: string }>({})
-
   return (
     <div className="flex flex-col sm:flex-row gap-2 mb-4">
       <Input
         type="number"
         placeholder="Pedido ID"
-        value={id}
-        onChange={(e) => setId(e.target.value)}
+        value={value.id}
+        onChange={(e) => onChange({ ...value, id: e.target.value })}
       />
       <Input
         type="number"
         placeholder="Comanda ID"
-        value={comandaId}
-        onChange={(e) => setComandaId(e.target.value)}
+        value={value.comandaId}
+        onChange={(e) => onChange({ ...value, comandaId: e.target.value })}
       />
-      <DateTimePicker value={from} onChange={setFrom} />
-      <DateTimePicker value={to} onChange={setTo} />
-      <Button
-        onClick={() => {
-          onFilterChange({
-            id: id ? Number(id) : undefined,
-            comandaId: comandaId ? Number(comandaId) : undefined,
-            from: buildISO(from),
-            to: buildISO(to),
-          })
-        }}
-      >
-        Filtrar
-      </Button>
+      <DateTimePicker
+        value={value.from}
+        onChange={(from) => onChange({ ...value, from })}
+      />
+      <DateTimePicker
+        value={value.to}
+        onChange={(to) => onChange({ ...value, to })}
+      />
+      <Button onClick={onFilter}>Filtrar</Button>
     </div>
-  )
-}
-export function OrderFilterReset({ onReset }: { onReset: () => void }) {
-  return (
-    <Button variant="outline" onClick={onReset}>
-      Limpar Filtros
-    </Button>
   )
 }
