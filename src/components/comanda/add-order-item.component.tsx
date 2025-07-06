@@ -1,43 +1,20 @@
-import { trpc } from "@/app/trpc/client"
 import { ProductSearchDialog } from "@/components/product/product-search-dialog"
+import { useAddOrderItemMutation } from "@/hooks/useComanda"
+import { Order } from "@/types/order"
 import { useState } from "react"
-import { toast } from "sonner"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 
-export function AddOrderItem({
-  orderId,
-  onAdded,
-}: {
-  orderId: number
-  onAdded: () => void
-}) {
+export function AddOrderItem({ order }: { order: Order }) {
   const [productId, setProductId] = useState("")
   const [amount, setAmount] = useState(1)
 
-  const utils = trpc.useUtils()
-
-  const addItem = trpc.order.addOrderItem.useMutation({
-    onSuccess: () => {
-      onAdded()
+  const addItem = useAddOrderItemMutation({
+    onAdded: () => {
       setProductId("")
       setAmount(1)
-      utils.order.getCurrentByComandaId.invalidate()
-      toast.success("Item adicionado com sucesso!")
     },
-    onError: (error) => {
-      console.error("Erro ao adicionar item:", error)
-      if (
-        error.data?.code === "NOT_FOUND" &&
-        error.message.includes("Product")
-      ) {
-        toast.error("Produto não encontrado")
-      } else {
-        toast.error(
-          `Erro ao adicionar item: ${error.message || "Erro desconhecido"}`,
-        )
-      }
-    },
+    comandaId: order.comandaId,
   })
 
   return (
@@ -62,7 +39,7 @@ export function AddOrderItem({
           <Button
             onClick={() =>
               addItem.mutate({
-                orderId,
+                orderId: order.id,
                 productId: Number(productId),
                 amount,
               })

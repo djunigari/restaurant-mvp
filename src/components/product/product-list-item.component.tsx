@@ -1,7 +1,7 @@
 "use client"
 
 import { trpc } from "@/app/trpc/client"
-import { Product } from "@/generated/prisma"
+import { Product } from "@/types/product"
 import { toast } from "sonner"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"

@@ -1,6 +1,5 @@
 "use client"
 
-import { trpc } from "@/app/trpc/client"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,37 +9,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { useRemoveOrderItemMutation } from "@/hooks/useComanda"
+import { Order } from "@/types/order"
 import { useState } from "react"
-import { toast } from "sonner"
 
 export function RemoveOrderItemDialog({
-  orderId,
+  order,
   productId,
-  onUpdated,
   className,
 }: {
-  orderId: number
+  order: Order
   productId: number
-  onUpdated: () => void
   className?: string
 }) {
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState(1)
 
-  const removeItem = trpc.order.removeOrderItem.useMutation({
-    onSuccess: (result) => {
-      if (result.removed) {
-        toast.success("Item removido do pedido!")
-      } else if ("newQuantity" in result) {
-        toast.success(`Quantidade atualizada para ${result.newQuantity}`)
-      } else {
-        toast.success("Quantidade atualizada.")
-      }
-      onUpdated()
-    },
-    onError: (err) => {
-      toast.error(`Erro: ${err.message}`)
-    },
+  const removeItem = useRemoveOrderItemMutation({
+    comandaId: order.comandaId,
+    onRemoved: () => setOpen(false),
   })
 
   return (
@@ -67,7 +54,7 @@ export function RemoveOrderItemDialog({
             <Button
               onClick={() =>
                 removeItem.mutate({
-                  orderId,
+                  orderId: order.id,
                   productId,
                   amount,
                 })

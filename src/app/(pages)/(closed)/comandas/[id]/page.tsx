@@ -10,25 +10,18 @@ import { MarkAsPaidDialog } from "@/components/comanda/mark-as-paid-dialog"
 import MaxWidthWrapper from "@/components/template/MaxWidthWrapper"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useStartOrderMutation } from "@/hooks/useComanda"
 import { useParams } from "next/navigation"
 
 export default function ComandaPage() {
   const params = useParams<{ id: string }>()
   const id = Number(params.id)
 
-  const {
-    data: comanda,
-    isLoading,
-    refetch,
-  } = trpc.comanda.getById.useQuery(id)
+  const { data: comanda, isLoading } = trpc.comanda.getById.useQuery(id)
   const { data: currentOrder, isLoading: isLoadingOrder } =
     trpc.order.getCurrentByComandaId.useQuery(id)
 
-  const startOrder = trpc.order.start.useMutation({
-    onSuccess: () => {
-      refetch()
-    },
-  })
+  const startOrder = useStartOrderMutation()
 
   if (isLoading) return <p>Carregando comanda...</p>
   if (!comanda) return <p>Comanda não encontrada</p>
@@ -55,24 +48,12 @@ export default function ComandaPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              <AddOrderItem
-                orderId={currentOrder.id}
-                onAdded={() => refetch()}
-              />
-              <ComandaOrderList
-                order={currentOrder}
-                onUpdated={() => refetch()}
-              />
+              <AddOrderItem order={currentOrder} />
+              <ComandaOrderList order={currentOrder} />
 
               <div className="flex gap-2 mt-4">
-                <MarkAsPaidDialog
-                  orderId={currentOrder.id}
-                  onUpdated={() => refetch()}
-                />
-                <CancelOrderDialog
-                  orderId={currentOrder.id}
-                  onUpdated={() => refetch()}
-                />
+                <MarkAsPaidDialog orderId={currentOrder.id} />
+                <CancelOrderDialog orderId={currentOrder.id} />
               </div>
             </div>
           )}

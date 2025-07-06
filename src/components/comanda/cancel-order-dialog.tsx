@@ -1,6 +1,5 @@
 "use client"
 
-import { trpc } from "@/app/trpc/client"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -12,24 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { toast } from "sonner"
+import { useCancelOrderMutation } from "@/hooks/useComanda"
 
-export function CancelOrderDialog({
-  orderId,
-  onUpdated,
-}: {
-  orderId: number
-  onUpdated: () => void
-}) {
-  const cancelOrder = trpc.order.cancel.useMutation({
-    onSuccess: () => {
-      toast.success("Pedido cancelado!")
-      onUpdated()
-    },
-    onError: (err) => {
-      toast.error(`Erro: ${err.message}`)
-    },
-  })
+export function CancelOrderDialog({ orderId }: { orderId: number }) {
+  const cancelOrder = useCancelOrderMutation()
 
   return (
     <Dialog>

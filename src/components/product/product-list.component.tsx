@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Product } from "@/generated/prisma"
+import { Product } from "@/types/product"
 import { ProductListItemComponent } from "./product-list-item.component"
 
 interface ProductListComponentProps {

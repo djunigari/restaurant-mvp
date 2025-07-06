@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Product } from "@/generated/prisma"
+import { Product } from "@/types/product"
 import { useState } from "react"
 import { ProductFormComponent } from "./product-form.component"
 

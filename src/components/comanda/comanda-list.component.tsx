@@ -26,7 +26,7 @@ export function ComandaListComponent({
             key={comanda.id}
             className={cn(
               `flex flex-col gap-2 p-4 border rounded  
-              transition-colors space-x-2 w-[200px] text-center
+              transition-colors space-x-2 w-[150px] text-center
               `,
               {
                 "bg-blue-100 border-blue-200 hover:bg-blue-50":

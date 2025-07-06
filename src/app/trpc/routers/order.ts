@@ -12,39 +12,83 @@ export const orderRouter = createTRPCRouter({
           comandaId: z.number().optional(),
           from: z.string().datetime().optional(), // ISO string
           to: z.string().datetime().optional(), // ISO string
+          pageIndex: z.number().optional().default(0),
+          pageSize: z.number().optional().default(10),
+          sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
         })
         .optional(),
     )
     .query(async ({ ctx, input }) => {
-      return ctx.db.order.findMany({
-        where: {
-          ...(input?.id ? { id: input.id } : {}),
-          ...(input?.comandaId ? { comandaId: input.comandaId } : {}),
-          ...(input?.from || input?.to
-            ? {
-                createdAt: {
-                  ...(input?.from ? { gte: new Date(input.from) } : {}),
-                  ...(input?.to ? { lte: new Date(input.to) } : {}),
-                },
-              }
-            : {}),
-        },
-        include: {
-          comanda: true,
-        },
-        orderBy: { id: "desc" },
-      })
+      const { pageIndex = 0, pageSize = 10, sortOrder = "desc" } = input ?? {}
+      console.log("Fetching orders with input:", input)
+
+      const where = {
+        ...(input?.id ? { id: input.id } : {}),
+        ...(input?.comandaId ? { comandaId: input.comandaId } : {}),
+        ...(input?.from || input?.to
+          ? {
+              createdAt: {
+                ...(input?.from ? { gte: new Date(input.from) } : {}),
+                ...(input?.to ? { lte: new Date(input.to) } : {}),
+              },
+            }
+          : {}),
+      }
+
+      const [totalCount, items] = await ctx.db.$transaction([
+        ctx.db.order.count({ where }),
+        ctx.db.order.findMany({
+          where,
+          skip: pageIndex * pageSize,
+          take: pageSize,
+          include: {
+            comanda: true,
+          },
+          orderBy: { id: sortOrder },
+        }),
+      ])
+
+      return { totalCount, items }
     }),
 
   getAllByComandaId: baseProcedure
-    .input(z.number())
+    .input(
+      z
+        .object({
+          comandaId: z.number(),
+          from: z.string().datetime().optional(), // ISO string
+          to: z.string().datetime().optional(), // ISO string
+          pageIndex: z.number().optional().default(0),
+          pageSize: z.number().optional().default(10),
+          sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
+        })
+        .optional(),
+    )
     .query(async ({ ctx, input }) => {
-      return ctx.db.order.findMany({
-        where: {
-          comandaId: input,
-        },
-        orderBy: { id: "desc" },
-      })
+      const { pageIndex = 0, pageSize = 10, sortOrder = "desc" } = input ?? {}
+      const where = {
+        ...(input?.comandaId ? { comandaId: input.comandaId } : {}),
+        ...(input?.from || input?.to
+          ? {
+              createdAt: {
+                ...(input?.from ? { gte: new Date(input.from) } : {}),
+                ...(input?.to ? { lte: new Date(input.to) } : {}),
+              },
+            }
+          : {}),
+      }
+
+      const [totalCount, items] = await ctx.db.$transaction([
+        ctx.db.order.count({ where }),
+        ctx.db.order.findMany({
+          where,
+          skip: pageIndex * pageSize,
+          take: pageSize,
+          orderBy: { id: sortOrder },
+        }),
+      ])
+
+      return { totalCount, items }
     }),
 
   getById: baseProcedure.input(z.number()).query(async ({ ctx, input }) => {

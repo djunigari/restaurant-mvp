@@ -1,6 +1,5 @@
 "use client"
 
-import { trpc } from "@/app/trpc/client"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -12,24 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { toast } from "sonner"
+import { usePaidOrderMutation } from "@/hooks/useComanda"
 
-export function MarkAsPaidDialog({
-  orderId,
-  onUpdated,
-}: {
-  orderId: number
-  onUpdated: () => void
-}) {
-  const paidOrder = trpc.order.paid.useMutation({
-    onSuccess: () => {
-      toast.success("Pedido marcado como pago!")
-      onUpdated()
-    },
-    onError: (err) => {
-      toast.error(`Erro: ${err.message}`)
-    },
-  })
+export function MarkAsPaidDialog({ orderId }: { orderId: number }) {
+  const paidOrder = usePaidOrderMutation()
 
   return (
     <Dialog>

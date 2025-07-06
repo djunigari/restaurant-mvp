@@ -1,59 +1,70 @@
 "use client"
 
 import { Order } from "@/types/order"
+import { ChevronsUpDown } from "lucide-react"
+import { Button } from "../ui/button"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../ui/collapsible"
 import { RemoveOrderItemDialog } from "./remove-order-item-dialog"
+
 const fmt = new Intl.NumberFormat("ja-JP", {
   style: "currency",
   currency: "JPY",
   maximumFractionDigits: 0,
 })
 
-export function ComandaOrderList({
-  order,
-  onUpdated,
-}: {
-  order: Order
-  onUpdated: () => void
-}) {
+export function ComandaOrderList({ order }: { order: Order }) {
   const total = order.items.reduce((sum, item) => {
     return sum + item.product.price * item.quantity
   }, 0)
 
+  if (!order) return <span>Carregando...</span>
+
+  if (order.items.length === 0) {
+    return <span>Sem itens ainda.</span>
+  }
+
   return (
-    <ul className="w-full flex flex-col gap-2">
-      {order?.items.length === 0 ? (
-        <li>Sem itens ainda.</li>
-      ) : (
-        <>
-          <span className="mt-2 flex justify-between border-t pt-2 text-lg font-bold">
-            <span>Total:</span>
-            <span>{fmt.format(total)}</span>
-          </span>
-          {order?.items.map((item) => (
-            <li
-              key={item.id}
-              className="w-full flex flex-col border p-2 rounded"
-            >
-              <span className="font-semibold">{item.product.name}</span>
-              <div className="flex flex-col">
-                <div className="flex gap-2 text-sm text-gray-500">
-                  <span>Preço:{fmt.format(item.product.price)}</span>
-                  <span>Quantidade: {item.quantity}</span>
-                </div>
-                <span className="text-sm text-gray-500 font-semibold">
-                  Total:{fmt.format(item.product.price * item.quantity)}
-                </span>
-              </div>
-              <RemoveOrderItemDialog
-                className="ml-auto"
-                orderId={order.id}
-                productId={item.productId}
-                onUpdated={onUpdated}
-              />
-            </li>
-          ))}
-        </>
-      )}
-    </ul>
+    <div className="flex flex-col gap-2">
+      <span className="font-bold">Total: {fmt.format(total)}</span>
+
+      {order?.items.map((item) => (
+        <Collapsible
+          key={item.id}
+          className="w-full flex flex-col p-2 border rounded"
+        >
+          <div className="flex items-center justify-between gap-4">
+            <span className="font-semibold">
+              {item.quantity}x {item.product.name}
+            </span>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8">
+                <ChevronsUpDown />
+                <span className="sr-only">Toggle</span>
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+
+          <CollapsibleContent className="flex flex-col">
+            <div className="flex gap-2 text-sm text-gray-500">
+              <span>Preço:{fmt.format(item.product.price)}</span>
+              <span>Quantidade: {item.quantity}</span>
+            </div>
+            <span className="text-sm text-gray-500 font-semibold">
+              Total:{fmt.format(item.product.price * item.quantity)}
+            </span>
+
+            <RemoveOrderItemDialog
+              className="ml-auto"
+              order={order}
+              productId={item.productId}
+            />
+          </CollapsibleContent>
+        </Collapsible>
+      ))}
+    </div>
   )
 }
