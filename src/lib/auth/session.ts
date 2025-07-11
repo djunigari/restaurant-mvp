@@ -9,6 +9,12 @@ import "server-only"
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
 
+export function generateRandomToken() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(32)))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+}
+
 export async function encrypt(payload: SessionPayload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
@@ -19,6 +25,11 @@ export async function encrypt(payload: SessionPayload) {
 
 export async function decrypt(session: string | undefined = "") {
   try {
+    if (!session || session.split(".").length !== 3) {
+      console.warn("Invalid session format, skipping verify:", session)
+      return null
+    }
+
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     })
@@ -33,7 +44,7 @@ export async function createSession(user: User) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
   // cria token único para session
-  const sessionToken = crypto.randomBytes(32).toString("hex")
+  const sessionToken = generateRandomToken()
 
   // salva no banco
   const session = await prisma.session.create({
