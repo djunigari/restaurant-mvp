@@ -1,10 +1,10 @@
 import { ComandaStatus } from "@/generated/prisma"
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"
-import { baseProcedure, createTRPCRouter } from "../init"
+import { createTRPCRouter, protectedProcedure } from "../init"
 
 export const orderRouter = createTRPCRouter({
-  getAll: baseProcedure
+  getAll: protectedProcedure
     .input(
       z
         .object({
@@ -51,7 +51,7 @@ export const orderRouter = createTRPCRouter({
       return { totalCount, items }
     }),
 
-  getAllByComandaId: baseProcedure
+  getAllByComandaId: protectedProcedure
     .input(
       z
         .object({
@@ -91,14 +91,16 @@ export const orderRouter = createTRPCRouter({
       return { totalCount, items }
     }),
 
-  getById: baseProcedure.input(z.number()).query(async ({ ctx, input }) => {
-    return ctx.db.order.findUnique({
-      where: { id: input },
-      include: { comanda: true, items: { include: { product: true } } },
-    })
-  }),
+  getById: protectedProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      return ctx.db.order.findUnique({
+        where: { id: input },
+        include: { comanda: true, items: { include: { product: true } } },
+      })
+    }),
 
-  getCurrentByComandaId: baseProcedure
+  getCurrentByComandaId: protectedProcedure
     .input(z.number())
     .query(async ({ ctx, input }) => {
       return ctx.db.order.findFirst({
@@ -116,52 +118,58 @@ export const orderRouter = createTRPCRouter({
       })
     }),
 
-  start: baseProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    const comanda = await ctx.db.comanda.update({
-      where: { id: input },
-      data: { status: "OCCUPIED" },
-    })
+  start: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      const comanda = await ctx.db.comanda.update({
+        where: { id: input },
+        data: { status: "OCCUPIED" },
+      })
 
-    await ctx.db.order.create({
-      data: {
-        comandaId: comanda.id,
-        items: {},
-      },
-    })
+      await ctx.db.order.create({
+        data: {
+          comandaId: comanda.id,
+          items: {},
+        },
+      })
 
-    return comanda
-  }),
+      return comanda
+    }),
 
-  paid: baseProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    const order = await ctx.db.order.update({
-      where: { id: input },
-      data: { paidAt: new Date() },
-    })
+  paid: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      const order = await ctx.db.order.update({
+        where: { id: input },
+        data: { paidAt: new Date() },
+      })
 
-    await ctx.db.comanda.update({
-      where: { id: order.comandaId },
-      data: { status: ComandaStatus.OPEN },
-    })
+      await ctx.db.comanda.update({
+        where: { id: order.comandaId },
+        data: { status: ComandaStatus.OPEN },
+      })
 
-    return
-  }),
+      return
+    }),
 
-  cancel: baseProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    const order = await ctx.db.order.update({
-      where: { id: input },
-      data: { canceledAt: new Date() },
-    })
+  cancel: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      const order = await ctx.db.order.update({
+        where: { id: input },
+        data: { canceledAt: new Date() },
+      })
 
-    const res = await ctx.db.comanda.update({
-      where: { id: order.comandaId },
-      data: { status: ComandaStatus.OPEN },
-    })
+      const res = await ctx.db.comanda.update({
+        where: { id: order.comandaId },
+        data: { status: ComandaStatus.OPEN },
+      })
 
-    console.log("Comanda updated after canceling order:", res)
-    return
-  }),
+      console.log("Comanda updated after canceling order:", res)
+      return
+    }),
 
-  addOrderItem: baseProcedure
+  addOrderItem: protectedProcedure
     .input(
       z.object({
         orderId: z.number(),
@@ -214,7 +222,7 @@ export const orderRouter = createTRPCRouter({
       }
     }),
 
-  removeOrderItem: baseProcedure
+  removeOrderItem: protectedProcedure
     .input(
       z.object({
         orderId: z.number(),

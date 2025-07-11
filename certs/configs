@@ -1,0 +1,39 @@
+Configurar o navegador ou cliente HTTP para enviar o certificado
+🔥 Browser (local)
+No Chrome ou Firefox:
+
+Importe o client.crt no navegador como certificado pessoal.
+
+Na hora do requestCert, o navegador automaticamente pergunta qual certificado enviar.
+
+🔥 Via fetch (Node ou frontend via Electron):
+
+```
+import https from 'https'
+
+const agent = new https.Agent({
+  cert: fs.readFileSync('./client.crt'),
+  key: fs.readFileSync('./client.key'),
+  ca: fs.readFileSync('./ca.pem'),
+  rejectUnauthorized: true
+})
+
+fetch('https://localhost:3000/some-api', { agent })
+```
+
+Verificar no backend quem é o cliente
+Você pode acessar o certificado do cliente assim:
+
+```
+server.on('secureConnection', (tlsSocket) => {
+console.log('Cliente conectou com CN:', tlsSocket.getPeerCertificate().subject.CN)
+})
+```
+
+No NextRequest do Next.js você não tem isso nativamente, mas no custom server (server.js) você pode injetar no req e passar para o Next.
+
+E no middleware do Next?
+Não dá para usar mTLS no middleware.ts do Next.js porque ele roda no edge runtime (sem Node).
+Mas no seu custom server HTTPS (server.js), você já barra as conexões de quem não tem certificado válido.
+
+✅ Assim o edge nem vê requisições inválidas — elas são rejeitadas pelo HTTPS antes mesmo do Next receber.

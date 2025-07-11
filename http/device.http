@@ -1,0 +1,7 @@
+PATCH http://localhost:3000/api/authorize-device
+Content-Type: application/json
+
+{
+  "deviceId": "28993a6c-3272-46ee-b677-ac40a0aac774",
+  "fingerprint": "ae515b8f9b7c98b8eff76217b9024b75"
+}

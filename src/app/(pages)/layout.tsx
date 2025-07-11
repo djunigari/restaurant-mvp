@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/sonner"
+import { getUser } from "@/lib/auth/dal"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "../globals.css"
@@ -24,6 +25,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const user = await getUser()
+
   // const requestHeaders = await headers()
   // const deviceId = requestHeaders.get("x-device-id")
   // const fingerprint = requestHeaders.get("x-device-fingerprint")

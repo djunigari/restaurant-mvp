@@ -2,8 +2,7 @@
 CREATE TABLE "Comanda" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "status" TEXT NOT NULL DEFAULT 'OPEN',
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "deletedAt" DATETIME
 );
 
 -- CreateTable
@@ -23,6 +22,7 @@ CREATE TABLE "OrderItem" (
     "quantity" INTEGER NOT NULL,
     "orderId" INTEGER NOT NULL,
     "productId" INTEGER NOT NULL,
+    "deletedAt" DATETIME,
     CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "OrderItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -32,8 +32,24 @@ CREATE TABLE "Product" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "price" REAL NOT NULL
+    "price" REAL NOT NULL,
+    "deletedAt" DATETIME
+);
+
+-- CreateTable
+CREATE TABLE "Device" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "fingerprint" TEXT NOT NULL,
+    "authorized" BOOLEAN NOT NULL DEFAULT false,
+    "userAgent" TEXT NOT NULL,
+    "lastKnownIp" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "OrderItem_orderId_productId_key" ON "OrderItem"("orderId", "productId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Product_name_key" ON "Product"("name");

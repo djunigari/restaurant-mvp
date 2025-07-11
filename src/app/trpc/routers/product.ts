@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod"
-import { baseProcedure, createTRPCRouter } from "../init"
+import { createTRPCRouter, protectedProcedure } from "../init"
 
 export const productRouter = createTRPCRouter({
   // ✅ Listar todos com paginação, filtro e ordenação
-  getAll: baseProcedure
+  getAll: protectedProcedure
     .input(
       z
         .object({
@@ -58,14 +57,16 @@ export const productRouter = createTRPCRouter({
     }),
 
   // ✅ Buscar um por ID
-  getById: baseProcedure.input(z.number()).query(async ({ ctx, input }) => {
-    return ctx.db.product.findUnique({
-      where: { id: input },
-    })
-  }),
+  getById: protectedProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      return ctx.db.product.findUnique({
+        where: { id: input },
+      })
+    }),
 
   // ✅ Criar produto
-  create: baseProcedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -84,7 +85,7 @@ export const productRouter = createTRPCRouter({
     }),
 
   // ✅ Atualizar produto
-  update: baseProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.number(),
@@ -105,9 +106,11 @@ export const productRouter = createTRPCRouter({
     }),
 
   // ✅ Deletar produto
-  delete: baseProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    return ctx.db.product.delete({
-      where: { id: input },
-    })
-  }),
+  delete: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.product.delete({
+        where: { id: input },
+      })
+    }),
 })

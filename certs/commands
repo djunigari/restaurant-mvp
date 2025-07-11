@@ -1,0 +1,23 @@
+O que é mTLS?
+  No HTTPS normal (TLS), só o servidor mostra um certificado, para o cliente ter certeza de quem é o servidor.
+  No mutual TLS (mTLS), o cliente também mostra um certificado, e o servidor só aceita conexões se o certificado do cliente for válido.
+Assim:
+  ✅ Mesmo que alguém copie deviceId, fingerprint, cookies ou até JWT, sem o certificado do cliente eles não conseguem abrir conexão HTTPS.
+
+
+Para usar mTLS você precisa:
+
+a. CA (autoridade certificadora)
+openssl genrsa -out ca.key 4096
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.pem
+
+
+b. Certificado do servidor
+openssl genrsa -out server.key 2048
+openssl req -new -key server.key -out server.csr
+openssl x509 -req -in server.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out server.crt -days 365 -sha256
+
+c. Certificado do cliente
+openssl genrsa -out client.key 2048
+openssl req -new -key client.key -out client.csr
+openssl x509 -req -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out client.crt -days 365 -sha256

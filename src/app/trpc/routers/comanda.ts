@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod"
-import { baseProcedure, createTRPCRouter } from "../init"
+import { createTRPCRouter, protectedProcedure } from "../init"
 
 export const comandaRouter = createTRPCRouter({
-  getAll: baseProcedure
+  getAll: protectedProcedure
     .input(
       z
         .object({
@@ -60,22 +59,26 @@ export const comandaRouter = createTRPCRouter({
       }
     }),
 
-  getById: baseProcedure.input(z.number()).query(async ({ ctx, input }) => {
-    return ctx.db.comanda.findUnique({
-      where: { id: input },
-    })
-  }),
+  getById: protectedProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      return ctx.db.comanda.findUnique({
+        where: { id: input },
+      })
+    }),
 
-  create: baseProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    return ctx.db.comanda.create({
-      data: {
-        id: input,
-        status: "OPEN",
-      },
-    })
-  }),
+  create: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.comanda.create({
+        data: {
+          id: input,
+          status: "OPEN",
+        },
+      })
+    }),
 
-  updateStatus: baseProcedure
+  updateStatus: protectedProcedure
     .input(
       z.object({
         id: z.number(),
@@ -89,9 +92,11 @@ export const comandaRouter = createTRPCRouter({
       })
     }),
 
-  delete: baseProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    return ctx.db.comanda.delete({
-      where: { id: input },
-    })
-  }),
+  delete: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.comanda.delete({
+        where: { id: input },
+      })
+    }),
 })
