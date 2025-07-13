@@ -2,11 +2,12 @@
 
 import { trpc } from "@/app/trpc/client"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 export default function LogoutButton() {
   const logout = trpc.auth.logout.useMutation({
     onSuccess: () => {
-      alert("Deslogado!")
+      toast.success("Deslogado!")
     },
   })
 

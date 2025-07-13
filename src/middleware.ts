@@ -5,17 +5,26 @@ import { NextResponse } from "next/server"
 import { decrypt } from "./lib/auth/session"
 
 // 1. Specify protected and public routes
-const protectedRoutes = ["/", "/dashboard"]
+// const protectedRoutes = ["/", "/dashboard", "/orders/*"]
+const protectedRoutes = ["/*"]
 const publicRoutes = ["/login", "/signup"]
+
+function matchRoute(path: string, route: string) {
+  if (route.endsWith("/*")) {
+    const base = route.slice(0, -2)
+    return path === base || path.startsWith(`${base}/`)
+  }
+  return path === route
+}
 
 // 🔍 Função para determinar se é rota protegida
 function isProtectedRoute(path: string) {
-  return protectedRoutes.includes(path)
+  return protectedRoutes.some((route) => matchRoute(path, route))
 }
 
 // 🔍 Função para determinar se é rota pública
 function isPublicRoute(path: string) {
-  return publicRoutes.includes(path)
+  return publicRoutes.some((route) => matchRoute(path, route))
 }
 
 // 🔍 Função para checar device via API

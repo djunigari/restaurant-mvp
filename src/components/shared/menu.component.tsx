@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from "@/lib/auth/contexts/auth.context"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -10,6 +11,9 @@ export interface MenuProps {
 
 export default function Menu(props: MenuProps) {
   const caminho = usePathname()
+  const { session } = useAuth()
+
+  const isAdmin = session?.role === "ADMIN"
 
   return (
     <nav className={cn("flex gap-6 font-semibold", props.classname)}>
@@ -22,6 +26,11 @@ export default function Menu(props: MenuProps) {
       <MenuItem href="/products" selecionado={caminho.startsWith("/products")}>
         Produtos
       </MenuItem>
+      {isAdmin && (
+        <MenuItem href="/users" selecionado={caminho.startsWith("/users")}>
+          Usuários
+        </MenuItem>
+      )}
     </nav>
   )
 }

@@ -25,6 +25,12 @@ export default function Home() {
             Pedidos (Orders)
           </button>
         </Link>
+
+        <Link href="/users">
+          <button className="bg-orange-500 text-white px-6 py-3 rounded w-60">
+            Usuários
+          </button>
+        </Link>
       </div>
     </div>
   )
