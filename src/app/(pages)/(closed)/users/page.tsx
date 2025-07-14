@@ -1,7 +1,6 @@
 "use client"
 
 import { trpc } from "@/app/trpc/client"
-import { ProductAddDialog } from "@/components/product/product-add-dialog"
 import MaxWidthWrapper from "@/components/template/MaxWidthWrapper"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,6 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { UserAddDialog } from "@/components/user/user-add-dialog"
+import { UserListComponent } from "@/components/user/user-list.component"
 import { useState } from "react"
 
 export default function UserListPage() {
@@ -20,7 +21,7 @@ export default function UserListPage() {
   const [pageIndex, setPageIndex] = useState(0)
   // const debouncedFilter = useDebounce(filter, 300)
 
-  const { data, isLoading } = trpc.user.getAll.useQuery({
+  const { data, isLoading } = trpc.auth.getAll.useQuery({
     pageIndex,
     filter,
     typeFilter,
@@ -48,11 +49,11 @@ export default function UserListPage() {
               setFilter(inputValue)
             }}
           />
-          <ProductAddDialog />
+          <UserAddDialog />
         </div>
         {/* Lista de produtos */}
         <UserListComponent
-          data={data.data}
+          data={data.data || []}
           totalPages={data.totalPages}
           pageIndex={data.pageIndex}
           onPageChange={(page) => setPageIndex(page)}

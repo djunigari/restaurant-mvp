@@ -22,7 +22,7 @@ export default function ExternalHeader() {
           <Menu classname="self-end" />
         </div>
 
-        {session ? <LogoutButton /> : null}
+        {session?.userId ? <LogoutButton /> : null}
       </MaxWidthWrapper>
     </header>
   )

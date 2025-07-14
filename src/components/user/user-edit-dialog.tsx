@@ -38,6 +38,7 @@ export function UserEditDialog({ user }: ProductEditDialogProps) {
           userId={user.id}
           defaultValues={{
             name: user.name || "",
+            email: user.email || "",
           }}
           onSuccess={() => setOpen(false)}
         />

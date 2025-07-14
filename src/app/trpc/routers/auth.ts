@@ -7,13 +7,7 @@ import { baseProcedure, createTRPCRouter, protectedProcedure } from "../init"
 
 export const authRouter = createTRPCRouter({
   getSession: baseProcedure.query(async () => {
-    const session = await verifySession()
-    if (!session) return null
-
-    return {
-      ...session,
-      expiresAt: session.expiresAt.toISOString(),
-    }
+    return verifySession()
   }),
 
   signup: baseProcedure
@@ -165,34 +159,42 @@ export const authRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const existingUser = await ctx.db.user.findUnique({
-        where: { email: input.email },
-      })
-      if (existingUser) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Email already exists",
+      try {
+        const existingUser = await ctx.db.user.findUnique({
+          where: { email: input.email },
         })
-      }
+        if (existingUser) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Email already exists",
+          })
+        }
 
-      const passwordHash = await bcrypt.hash(input.password, 10)
+        const passwordHash = await bcrypt.hash(input.password, 10)
 
-      const user = await ctx.db.user.create({
-        data: {
-          email: input.email,
-          passwordHash,
-          name: input.name,
-          role: "USER",
-        },
-      })
+        const user = await ctx.db.user.create({
+          data: {
+            email: input.email,
+            passwordHash,
+            name: input.name,
+            role: "USER",
+          },
+        })
 
-      return {
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        },
+        return {
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+        }
+      } catch (err) {
+        console.error("Error creating user:", err)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Could not create user",
+        })
       }
     }),
 

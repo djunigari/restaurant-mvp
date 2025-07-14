@@ -1,14 +1,15 @@
 import { prisma } from "@/utils/prisma"
 import { initTRPC, TRPCError } from "@trpc/server"
 import { cache } from "react"
+import superjson from "superjson"
 
 // 👇 Context: só coleta headers e disponibiliza Prisma + deviceId + fingerprint
 export const createTRPCContext = cache(async (opts?: { req?: Request }) => {
   const headers = opts?.req?.headers
 
-  console.log("Creating TRPC context", {
-    headers: headers ? Object.fromEntries(headers.entries()) : "No headers",
-  })
+  // console.log("Creating TRPC context", {
+  //   headers: headers ? Object.fromEntries(headers.entries()) : "No headers",
+  // })
 
   if (!headers) {
     // chamadas internas (SSR, etc)
@@ -33,7 +34,7 @@ export const createTRPCContext = cache(async (opts?: { req?: Request }) => {
 export type Context = Awaited<ReturnType<typeof createTRPCContext>>
 
 // 👇 Inicializa tRPC
-const t = initTRPC.context<Context>().create({})
+const t = initTRPC.context<Context>().create({ transformer: superjson })
 
 export const createTRPCRouter = t.router
 export const createCallerFactory = t.createCallerFactory

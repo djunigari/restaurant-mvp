@@ -1,6 +1,6 @@
 import { ProductSearchDialog } from "@/components/product/product-search-dialog"
+import { Order } from "@/generated/prisma"
 import { useAddOrderItemMutation } from "@/hooks/useComanda"
-import { Order } from "@/types/order"
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"

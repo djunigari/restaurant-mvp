@@ -6,6 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { httpBatchLink } from "@trpc/client"
 import { createTRPCReact } from "@trpc/react-query"
 import { useState } from "react"
+import superjson from "superjson"
 import { makeQueryClient } from "./query-client"
 import type { AppRouter } from "./routers/_app.ts"
 
@@ -52,6 +53,7 @@ export function TRPCProvider(
               "x-device-fingerprint": fingerprint,
             }
           },
+          transformer: superjson,
         }),
       ],
     }),

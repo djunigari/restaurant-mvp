@@ -76,16 +76,12 @@ export async function middleware(req: NextRequest) {
 
   const session = await loadSessionFromCookie()
 
-  if (isProtectedRoute(path) && !session?.userId) {
-    return NextResponse.redirect(new URL("/login", req.nextUrl))
+  if (isPublicRoute(path)) {
+    return NextResponse.next()
   }
 
-  if (
-    isPublicRoute(path) &&
-    session?.userId &&
-    !path.startsWith("/dashboard")
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", req.nextUrl))
+  if (isProtectedRoute(path) && !session?.userId) {
+    return NextResponse.redirect(new URL("/login", req.nextUrl))
   }
 
   return NextResponse.next()

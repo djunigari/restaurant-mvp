@@ -48,6 +48,12 @@ export function UserFormComponent({
     watch,
   } = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      ...defaultValues,
+    },
   })
 
   const utils = trpc.useUtils() // Para invalidar cache após criar
@@ -64,8 +70,10 @@ export function UserFormComponent({
         toast.error(`Erro ao criar usuário`, {
           description: "Nome já registrado",
         })
+        console.error("Erro ao criar usuário:", error)
         return
       }
+      console.error("Erro ao criar usuário:", error)
       toast.error(`Erro ao criar usuário`)
     },
   })

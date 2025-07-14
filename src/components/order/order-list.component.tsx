@@ -1,15 +1,11 @@
 "use client"
 
+import { Order } from "@/generated/prisma"
 import { CheckCircle, Clock, XCircle } from "lucide-react"
 import Link from "next/link"
 
 interface OrderListProps {
-  orders: {
-    id: number
-    createdAt: string
-    paidAt: string | null
-    canceledAt: string | null
-  }[]
+  orders: Order[]
   showLinks?: boolean
 }
 
