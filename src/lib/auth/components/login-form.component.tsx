@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { redirect } from "next/navigation"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { z } from "zod"
 
 const LoginSchema = z.object({
@@ -27,8 +29,8 @@ export default function LoginForm() {
 
   const login = trpc.auth.login.useMutation({
     onSuccess: () => {
-      alert("Logado com sucesso!")
-      reset()
+      toast.success("Logado com sucesso!")
+      redirect("/")
     },
   })
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { trpc } from "@/app/trpc/client"
+import LoadingOverlay from "@/components/shared/loading-overlay.component"
 import MaxWidthWrapper from "@/components/template/MaxWidthWrapper"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,10 +28,9 @@ export default function UserListPage() {
     typeFilter,
   })
 
-  if (isLoading || !data) return <p>Carregando...</p>
-
   return (
     <MaxWidthWrapper>
+      {isLoading && <LoadingOverlay />}
       <div className="p-4 space-y-8">
         <h1 className="text-xl font-bold mb-4">Usuários</h1>
         <div className="flex flex-col gap-2 sm:flex-row">
@@ -51,13 +51,27 @@ export default function UserListPage() {
           />
           <UserAddDialog />
         </div>
-        {/* Lista de produtos */}
-        <UserListComponent
-          data={data.data || []}
-          totalPages={data.totalPages}
-          pageIndex={data.pageIndex}
-          onPageChange={(page) => setPageIndex(page)}
-        />
+        {/* Lista de usuarios */}
+        {isLoading && <LoadingOverlay />}
+
+        {data ? (
+          data.data.length === 0 ? (
+            <div className="text-center text-gray-500">
+              Nenhum usuário encontrado.
+            </div>
+          ) : (
+            <UserListComponent
+              data={data.data || []}
+              totalPages={data.totalPages}
+              pageIndex={data.pageIndex}
+              onPageChange={(page) => setPageIndex(page)}
+            />
+          )
+        ) : (
+          <div className="text-center text-gray-500">
+            Nenhum usuário encontrado.
+          </div>
+        )}
       </div>
     </MaxWidthWrapper>
   )
@@ -79,7 +93,7 @@ function FilterInput({
   return (
     <div className="w-full flex border rounded-md overflow-hidden shadow-sm">
       <label htmlFor="filter" className="sr-only">
-        Filtrar por nome do produto ou ID
+        Filtrar por nome do usuário ou ID
       </label>
       <Select onValueChange={setTypeFilter} defaultValue={typeFilter}>
         <SelectTrigger className="w-[100px] rounded-none border-none bg-zinc-100">
@@ -92,7 +106,7 @@ function FilterInput({
       </Select>
       <input
         id="filter"
-        type={typeFilter === "ID" ? "number" : "text"}
+        type={"text"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={
@@ -104,7 +118,7 @@ function FilterInput({
       <Button
         onClick={onSearch}
         variant={"secondary"}
-        className="border-l-0 rounded-none"
+        className="border-l-0 rounded-none cursor-pointer"
       >
         <span className="sr-only">Pesquisar</span>
         Pesquisar

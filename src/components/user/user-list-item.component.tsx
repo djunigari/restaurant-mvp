@@ -3,9 +3,9 @@
 import { trpc } from "@/app/trpc/client"
 import { User } from "@/generated/prisma"
 import { toast } from "sonner"
-import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
 import { UserEditDialog } from "./user-edit-dialog"
+import { UserIdWithCopy } from "./user-id-pop-up.component"
 
 interface UserListItemComponentProps {
   user: User
@@ -34,12 +34,7 @@ export function UserListItemComponent({
 
   return (
     <div className={`flex flex-col sm:flex-row border p-4 rounded shadow-sm`}>
-      <div>
-        <div className="flex items-center gap-2 mb-2">
-          <Badge variant={"default"}>{user.id}</Badge>
-          <span className="font-semibold">{user.name}</span>
-        </div>
-      </div>
+      <UserIdWithCopy user={user} />
 
       <div className="flex gap-2 ml-auto">
         <UserEditDialog user={user} />

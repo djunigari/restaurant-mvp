@@ -6,11 +6,9 @@ import { AuthProvider } from "@/lib/auth/contexts/auth.context"
 export default function Layout(props: any) {
   return (
     <AuthProvider>
-      <div className="w-full flex flex-col">
-        <ExternalHeader />
+      <ExternalHeader />
 
-        {props.children}
-      </div>
+      {props.children}
     </AuthProvider>
   )
 }
