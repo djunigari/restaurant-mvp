@@ -4,12 +4,12 @@ import { trpc } from "@/app/trpc/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { FieldErrors, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { Label } from "../ui/label"
 
-const userSchema = z.object({
+const createUserSchema = z.object({
   name: z
     .string()
     .min(2, { message: "Name must be at least 2 characters long." })
@@ -26,10 +26,14 @@ const userSchema = z.object({
     .trim(),
 })
 
-export type UserFormValues = z.infer<typeof userSchema>
+const updateUserSchema = createUserSchema.omit({ password: true })
+
+// Tipos separados
+type CreateUserFormValues = z.infer<typeof createUserSchema>
+type UpdateUserFormValues = z.infer<typeof updateUserSchema>
 
 interface UserFormProps {
-  defaultValues?: Partial<UserFormValues>
+  defaultValues?: Partial<CreateUserFormValues>
   userId?: string // se estiver presente, é edição
   onSuccess?: () => void // opcional: para fechar modal após salvar
 }
@@ -46,8 +50,8 @@ export function UserFormComponent({
     reset,
     setValue,
     watch,
-  } = useForm<UserFormValues>({
-    resolver: zodResolver(userSchema),
+  } = useForm<CreateUserFormValues | UpdateUserFormValues>({
+    resolver: zodResolver(!!userId ? updateUserSchema : createUserSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -95,11 +99,17 @@ export function UserFormComponent({
     },
   })
 
-  function onSubmit(data: UserFormValues) {
+  function onSubmit(data: CreateUserFormValues | UpdateUserFormValues) {
+    console.log("Submitting user form:", data)
+
     if (userId) {
       update.mutate({ id: userId, ...data })
     } else {
-      create.mutate(data)
+      if ("password" in data) {
+        create.mutate(data)
+      } else {
+        console.error("Senha ausente no cadastro")
+      }
     }
   }
 
@@ -125,21 +135,31 @@ export function UserFormComponent({
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          placeholder="******"
-          {...register("password")}
-        />
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
-        )}
-      </div>
+      {!userId && (
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="******"
+            {...register("password")}
+          />
+          {(errors as FieldErrors<CreateUserFormValues>).password && (
+            <p className="text-sm text-red-500">
+              {(errors as FieldErrors<CreateUserFormValues>).password?.message}
+            </p>
+          )}
+        </div>
+      )}
 
-      <Button type="submit" disabled={create.isPending} className="w-full">
-        {create.isPending ? "Signing Up..." : "Sign Up"}
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {isSubmitting
+          ? userId
+            ? "Salvando..."
+            : "Criando..."
+          : userId
+          ? "Salvar"
+          : "Criar"}
       </Button>
 
       {create.error && (

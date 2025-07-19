@@ -221,4 +221,101 @@ export const authRouter = createTRPCRouter({
         where: { id: input },
       })
     }),
+
+  changePasswordFromAdmin: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(), // ID do usuário cuja senha será alterada
+        newPassword: z.string().min(6), // Nova senha
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Usuário não autenticado.",
+        })
+      }
+
+      // Verifica se o usuário logado é ADMIN
+      const admin = await ctx.db.user.findUnique({
+        where: { id: ctx.userId },
+      })
+
+      if (!admin || admin.role !== "ADMIN") {
+        console.error("Apenas administradores podem alterar senhas.")
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Apenas administradores podem alterar senhas.",
+        })
+      }
+
+      const targetUser = await ctx.db.user.findUnique({
+        where: { id: input.userId },
+      })
+
+      if (!targetUser) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Usuário não encontrado.",
+        })
+      }
+
+      const passwordHash = await bcrypt.hash(input.newPassword, 10)
+
+      await ctx.db.user.update({
+        where: { id: input.userId },
+        data: { passwordHash },
+      })
+
+      return { success: true, message: "Senha alterada com sucesso." }
+    }),
+
+  updateOwnPassword: protectedProcedure
+    .input(
+      z.object({
+        currentPassword: z.string(),
+        newPassword: z.string().min(6),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Usuário não autenticado.",
+        })
+      }
+
+      const user = await ctx.db.user.findUnique({
+        where: { id: ctx.userId },
+      })
+
+      if (!user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Usuário não encontrado.",
+        })
+      }
+
+      const isValid = await bcrypt.compare(
+        input.currentPassword,
+        user.passwordHash,
+      )
+
+      if (!isValid) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Senha atual incorreta.",
+        })
+      }
+
+      const newPasswordHash = await bcrypt.hash(input.newPassword, 10)
+
+      await ctx.db.user.update({
+        where: { id: user.id },
+        data: { passwordHash: newPasswordHash },
+      })
+
+      return { success: true, message: "Senha atualizada com sucesso." }
+    }),
 })

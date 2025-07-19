@@ -7,6 +7,24 @@ import { redirect } from "next/navigation"
 import { cache } from "react"
 import { SessionPayload } from "./definitions"
 
+export const verifySessionFromServer = cache(
+  async (): Promise<SessionPayload | null> => {
+    try {
+      const cookie = (await cookies()).get("session")?.value
+      if (!cookie) return null
+
+      const session = (await decrypt(cookie)) as SessionPayload
+
+      if (!session?.userId) return null
+
+      return session
+    } catch (err) {
+      console.error("Invalid session:", err)
+      return null
+    }
+  },
+)
+
 export const verifySession = cache(async (): Promise<SessionPayload | null> => {
   try {
     const cookie = (await cookies()).get("session")?.value

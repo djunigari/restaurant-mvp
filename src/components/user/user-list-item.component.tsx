@@ -4,6 +4,7 @@ import { trpc } from "@/app/trpc/client"
 import { User } from "@/generated/prisma"
 import { toast } from "sonner"
 import { Button } from "../ui/button"
+import { ResetPasswordDialog } from "./reset-password-dialog"
 import { UserEditDialog } from "./user-edit-dialog"
 import { UserIdWithCopy } from "./user-id-pop-up.component"
 
@@ -37,6 +38,10 @@ export function UserListItemComponent({
       <UserIdWithCopy user={user} />
 
       <div className="flex gap-2 ml-auto">
+        <ResetPasswordDialog
+          userId={user.id}
+          userEmail={user.email || user.id}
+        />
         <UserEditDialog user={user} />
         <Button
           variant="destructive"

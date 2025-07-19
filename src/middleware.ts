@@ -8,6 +8,7 @@ import { decrypt } from "./lib/auth/session"
 // const protectedRoutes = ["/", "/dashboard", "/orders/*"]
 const protectedRoutes = ["/*"]
 const publicRoutes = ["/login", "/signup"]
+const needCheckDevice = process.env.NEXT_PUBLIC_CHECK_DEVICE === "false"
 
 function matchRoute(path: string, route: string) {
   if (route.endsWith("/*")) {
@@ -69,9 +70,11 @@ async function loadSessionFromCookie() {
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname
 
-  const deviceCheck = await checkDevice(req)
-  if (!deviceCheck.ok) {
-    return NextResponse.json({ error: deviceCheck.reason }, { status: 401 })
+  if (needCheckDevice) {
+    const deviceCheck = await checkDevice(req)
+    if (!deviceCheck.ok) {
+      return NextResponse.json({ error: deviceCheck.reason }, { status: 401 })
+    }
   }
 
   const session = await loadSessionFromCookie()

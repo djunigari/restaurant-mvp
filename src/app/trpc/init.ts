@@ -1,3 +1,4 @@
+import { verifySessionFromServer } from "@/lib/auth/dal"
 import { prisma } from "@/utils/prisma"
 import { initTRPC, TRPCError } from "@trpc/server"
 import { cookies } from "next/headers"
@@ -29,9 +30,12 @@ export const createTRPCContext = cache(async (opts?: { req?: Request }) => {
   const ip = headers.get("x-forwarded-for") || ""
   const userAgent = headers.get("user-agent") || ""
 
+  const session = await verifySessionFromServer()
+
   console.groupEnd()
   return {
-    userId: "user_123",
+    userId: session?.userId || null,
+    role: session?.role || null,
     db: prisma,
     deviceId,
     fingerprint,
