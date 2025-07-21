@@ -58,7 +58,7 @@ export function ResetPasswordDialog({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button variant="outline" size="sm">
-            Resetar Senha
+            Resetar
           </Button>
         </DialogTrigger>
         <DialogContent>

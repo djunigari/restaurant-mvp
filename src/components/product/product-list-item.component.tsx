@@ -47,6 +47,12 @@ export function ProductListItemComponent({
         </div>
         <p className="text-sm text-gray-500">{product.description}</p>
         <p className="font-semibold mt-2">{fmt.format(product.price)}</p>
+        {product.barcode && (
+          <p className="text-sm text-gray-500 mt-1">
+            <span className="font-medium">Código de barras:</span>{" "}
+            {product.barcode}
+          </p>
+        )}
       </div>
 
       <div className="flex gap-2 ml-auto">

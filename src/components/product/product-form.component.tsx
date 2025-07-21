@@ -14,6 +14,7 @@ const productSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
   description: z.string().optional(),
   price: z.number().min(0, "Preço inválido"),
+  barcode: z.string().optional(),
 })
 
 export type ProductFormValues = z.infer<typeof productSchema>
@@ -142,7 +143,17 @@ export function ProductFormComponent({
           <p className="text-red-500 text-sm">{errors.price.message}</p>
         )}
       </div>
-
+      <div>
+        <label className="font-semibold">Código de barras:</label>
+        <Input
+          type="text"
+          {...register("barcode")}
+          placeholder="Ex: 7891234567890"
+        />
+        {errors.barcode && (
+          <p className="text-red-500 text-sm">{errors.barcode.message}</p>
+        )}
+      </div>
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting
           ? productId

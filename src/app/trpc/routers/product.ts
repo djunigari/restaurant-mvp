@@ -72,6 +72,7 @@ export const productRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional().default(""),
         price: z.number(),
+        barcode: z.string().optional().default(""),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -92,6 +93,7 @@ export const productRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         price: z.number(),
+        barcode: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

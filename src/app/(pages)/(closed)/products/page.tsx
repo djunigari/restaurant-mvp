@@ -63,7 +63,7 @@ export default function ProductListPage() {
   )
 }
 
-function FilterInput({
+export function FilterInput({
   typeFilter = "Name",
   setTypeFilter,
   value,
@@ -77,19 +77,23 @@ function FilterInput({
   onSearch: () => void
 }) {
   return (
-    <div className="w-full flex border rounded-md overflow-hidden shadow-sm">
+    <div className="w-full flex flex-col sm:flex-row sm:gap-0 border rounded-md overflow-hidden shadow-sm">
       <label htmlFor="filter" className="sr-only">
         Filtrar por nome do produto ou ID
       </label>
+
+      {/* Tipo de filtro */}
       <Select onValueChange={setTypeFilter} defaultValue={typeFilter}>
-        <SelectTrigger className="w-[100px] rounded-none border-none bg-zinc-100">
-          <SelectValue />
+        <SelectTrigger className="w-full sm:w-[100px] rounded-none border-none bg-zinc-100">
+          <SelectValue placeholder="Filtro" />
         </SelectTrigger>
-        <SelectContent className="border-l-0">
+        <SelectContent className="sm:border-l-0">
           <SelectItem value="ID">ID</SelectItem>
           <SelectItem value="Name">Nome</SelectItem>
         </SelectContent>
       </Select>
+
+      {/* Campo de input */}
       <input
         id="filter"
         type={typeFilter === "ID" ? "number" : "text"}
@@ -98,16 +102,19 @@ function FilterInput({
         placeholder={
           typeFilter === "ID" ? "Filtrar por ID" : "Filtrar por nome"
         }
-        className="flex-1 outline-none px-2 py-1 border-l border-r-0 focus:ring-0"
+        className="w-full px-3 py-2 h-9 border-none outline-none ring-0 focus:ring-0 focus:outline-none focus:border-none shadow-none"
+        autoComplete="off"
       />
 
+      {/* Botão de busca */}
       <Button
         onClick={onSearch}
-        variant={"secondary"}
-        className="border-l-0 rounded-none"
+        variant="secondary"
+        className="w-full sm:w-auto sm:border-l-0 rounded-none"
       >
         <span className="sr-only">Pesquisar</span>
-        Pesquisar
+        <span className="hidden sm:inline">Pesquisar</span>
+        <span className="sm:hidden">🔍</span>
       </Button>
     </div>
   )

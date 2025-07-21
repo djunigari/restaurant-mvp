@@ -3,5 +3,6 @@ export interface Product {
   name: string
   description: string
   price: number
-  deletedAt: string | null
+  barcode: string | null
+  deletedAt: Date | null
 }

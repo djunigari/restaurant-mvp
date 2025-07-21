@@ -17,15 +17,15 @@ enum Role {
 }
 
 model User {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?  @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
-  passwordHash  String    // se usar senha local
+  passwordHash  String // se usar senha local
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  role      Role     @default(USER)
+  role          Role      @default(USER)
 
   Session Session[]
 }
@@ -40,47 +40,47 @@ model Session {
   updatedAt    DateTime @updatedAt
 }
 
-model Comanda{
-  id       Int           @id @default(autoincrement())
-  status   ComandaStatus @default(OPEN)
-  deletedAt  DateTime?
-  
+model Comanda {
+  id        Int           @id @default(autoincrement())
+  status    ComandaStatus @default(OPEN)
+  deletedAt DateTime?
+
   orders Order[]
 }
 
 model Order {
-  id          Int           @id @default(autoincrement())
-  paidAt      DateTime?
-  canceledAt  DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id         Int       @id @default(autoincrement())
+  paidAt     DateTime?
+  canceledAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  comanda   Comanda      @relation(fields: [comandaId], references: [id])
+  comanda   Comanda @relation(fields: [comandaId], references: [id])
   comandaId Int
 
   items OrderItem[]
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   quantity  Int
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order     @relation(fields: [orderId], references: [id])
   orderId   Int
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
   productId Int
-  deletedAt  DateTime?
+  deletedAt DateTime?
 
   @@unique([orderId, productId])
 }
 
 model Product {
-  id          Int    @id @default(autoincrement())
-  name        String @unique
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
   description String
   price       Float
-  deletedAt  DateTime?
-
-  OrderItem OrderItem[]
+  barcode     String?
+  deletedAt   DateTime?
+  OrderItem   OrderItem[]
 }
 
 enum ComandaStatus {
@@ -93,8 +93,8 @@ model Device {
   name        String
   fingerprint String
   authorized  Boolean  @default(false)
-  userAgent    String
-  lastKnownIp  String
+  userAgent   String
+  lastKnownIp String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

@@ -8,6 +8,7 @@ import { Separator } from "@radix-ui/react-select"
 import { Menu as MenuIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState } from "react"
 
 export interface MenuProps {
   classname?: string
@@ -27,8 +28,10 @@ export default function Menu({ classname, mobile }: MenuProps) {
   ]
 
   if (mobile) {
+    const [open, setOpen] = useState(false)
+
     return (
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon">
             <MenuIcon className="h-5 w-5" />
@@ -44,6 +47,7 @@ export default function Menu({ classname, mobile }: MenuProps) {
                   key={link.href}
                   href={link.href}
                   active={pathname.startsWith(link.href)}
+                  onClick={() => setOpen(false)}
                 >
                   {link.label}
                 </SidebarLink>
@@ -81,14 +85,17 @@ function SidebarLink({
   href,
   active,
   children,
+  onClick,
 }: {
   href: string
   active: boolean
   children: React.ReactNode
+  onClick?: () => void
 }) {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={cn(
         "block px-3 py-2 rounded-md text-sm font-medium transition-colors",
         active
