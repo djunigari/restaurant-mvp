@@ -30,14 +30,16 @@ export function OrderFilter({
         value={value.comandaId}
         onChange={(e) => onChange({ ...value, comandaId: e.target.value })}
       />
-      <DateTimePicker
-        value={value.from}
-        onChange={(from) => onChange({ ...value, from })}
-      />
-      <DateTimePicker
-        value={value.to}
-        onChange={(to) => onChange({ ...value, to })}
-      />
+      <div className="flex gap-2">
+        <DateTimePicker
+          value={value.from}
+          onChange={(from) => onChange({ ...value, from })}
+        />
+        <DateTimePicker
+          value={value.to}
+          onChange={(to) => onChange({ ...value, to })}
+        />
+      </div>
       <Button onClick={onFilter}>Filtrar</Button>
     </div>
   )

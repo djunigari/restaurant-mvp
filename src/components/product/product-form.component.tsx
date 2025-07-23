@@ -39,6 +39,7 @@ export function ProductFormComponent({
     watch,
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
+    mode: "onSubmit",
     defaultValues: {
       name: "",
       description: "",
@@ -94,7 +95,6 @@ export function ProductFormComponent({
     }
   }
 
-  const name = watch("name") || ""
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {productId && (
@@ -107,17 +107,9 @@ export function ProductFormComponent({
       <div>
         <label className="font-semibold">Nome:</label>
         <Input
-          value={name}
-          onChange={(e) => {
-            const cleaned = e.target.value.replace(/\s{2,}/g, " ")
-            setValue("name", cleaned)
-          }}
-          onBlur={(e) => {
-            const cleaned = e.target.value
-              .replace(/\s+/g, " ")
-              .replace(/^\s+|\s+$/g, "")
-            setValue("name", cleaned, { shouldValidate: true })
-          }}
+          {...register("name")}
+          placeholder="Ex: Sushi de Salmão"
+          autoComplete="off"
         />
         {errors.name && (
           <p className="text-red-500 text-sm">{errors.name.message}</p>

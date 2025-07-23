@@ -1,6 +1,7 @@
 "use client"
 
 import { trpc } from "@/app/trpc/client"
+import MaxWidthWrapper from "@/components/template/MaxWidthWrapper"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 
@@ -20,7 +21,7 @@ export default function OrderDetailPage() {
   if (!order) return <p>Pedido não encontrado.</p>
 
   return (
-    <div className="max-w-2xl mx-auto py-6">
+    <MaxWidthWrapper>
       <Link href="/orders" className="text-sm underline">
         ← Voltar para pedidos
       </Link>
@@ -52,6 +53,6 @@ export default function OrderDetailPage() {
           </li>
         ))}
       </ul>
-    </div>
+    </MaxWidthWrapper>
   )
 }

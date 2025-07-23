@@ -38,55 +38,51 @@ export default function OrdersPage() {
 
   return (
     <MaxWidthWrapper>
-      <div className="p-4 space-y-8">
-        <h1 className="text-2xl font-bold mb-4">Pedidos</h1>
+      <h1 className="text-2xl font-bold mb-4">Pedidos</h1>
 
-        <OrderFilter
-          value={filter}
-          onChange={setFilter}
-          onFilter={() => {
-            setQueryFilter({
-              id: filter.id ? Number(filter.id) : undefined,
-              comandaId: filter.comandaId
-                ? Number(filter.comandaId)
-                : undefined,
-              from: buildISO(filter.from),
-              to: buildISO(filter.to),
-            })
-            refetch()
-          }}
-        />
+      <OrderFilter
+        value={filter}
+        onChange={setFilter}
+        onFilter={() => {
+          setQueryFilter({
+            id: filter.id ? Number(filter.id) : undefined,
+            comandaId: filter.comandaId ? Number(filter.comandaId) : undefined,
+            from: buildISO(filter.from),
+            to: buildISO(filter.to),
+          })
+          refetch()
+        }}
+      />
 
-        {!data?.totalCount || data.totalCount === 0 ? (
-          <span>Sem pedidos.</span>
-        ) : (
-          <>
-            <OrderList orders={data.items} />
+      {!data?.totalCount || data.totalCount === 0 ? (
+        <span>Sem pedidos.</span>
+      ) : (
+        <>
+          <OrderList orders={data.items} />
 
-            <div className="flex justify-center items-center gap-2 mt-4">
-              <Button
-                variant="outline"
-                disabled={pageIndex === 0}
-                onClick={() => setPageIndex(pageIndex - 1)}
-              >
-                Anterior
-              </Button>
+          <div className="flex justify-center items-center gap-2 mt-4">
+            <Button
+              variant="outline"
+              disabled={pageIndex === 0}
+              onClick={() => setPageIndex(pageIndex - 1)}
+            >
+              Anterior
+            </Button>
 
-              <span>
-                {pageIndex + 1} / {totalPages}
-              </span>
+            <span>
+              {pageIndex + 1} / {totalPages}
+            </span>
 
-              <Button
-                variant="outline"
-                disabled={pageIndex + 1 >= totalPages}
-                onClick={() => setPageIndex(pageIndex + 1)}
-              >
-                Próximo
-              </Button>
-            </div>
-          </>
-        )}
-      </div>
+            <Button
+              variant="outline"
+              disabled={pageIndex + 1 >= totalPages}
+              onClick={() => setPageIndex(pageIndex + 1)}
+            >
+              Próximo
+            </Button>
+          </div>
+        </>
+      )}
     </MaxWidthWrapper>
   )
 }

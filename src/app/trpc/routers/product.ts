@@ -76,6 +76,7 @@ export const productRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      console.log("Creating product:", input)
       try {
         return ctx.db.product.create({ data: input })
       } catch (error: any) {
@@ -97,6 +98,7 @@ export const productRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      console.log("Updating product:", input)
       return ctx.db.product.update({
         where: { id: input.id },
         data: {

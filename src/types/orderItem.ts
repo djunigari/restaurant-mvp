@@ -5,6 +5,6 @@ export interface OrderItem {
   quantity: number
   orderId: number
   productId: number
-  deletedAt: string | null
+  deletedAt: Date | null
   product: Product
 }

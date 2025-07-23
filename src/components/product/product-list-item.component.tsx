@@ -2,6 +2,7 @@
 
 import { trpc } from "@/app/trpc/client"
 import { Product } from "@/types/product"
+import Barcode from "react-barcode"
 import { toast } from "sonner"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
@@ -40,18 +41,25 @@ export function ProductListItemComponent({
 
   return (
     <div className={`flex flex-col sm:flex-row border p-4 rounded shadow-sm`}>
-      <div>
+      <div className="flex flex-col">
         <div className="flex items-center gap-2 mb-2">
-          <Badge variant={"default"}>{product.id}</Badge>
-          <span className="font-semibold">{product.name}</span>
+          <div className="flex items-center gap-2 mb-2">
+            <Badge variant={"default"}>{product.id}</Badge>
+            <span className="font-semibold">{product.name}</span>
+          </div>
+          <p className="text-sm text-gray-500">{product.description}</p>
+          <p className="font-semibold mt-2">{fmt.format(product.price)}</p>
         </div>
-        <p className="text-sm text-gray-500">{product.description}</p>
-        <p className="font-semibold mt-2">{fmt.format(product.price)}</p>
         {product.barcode && (
-          <p className="text-sm text-gray-500 mt-1">
-            <span className="font-medium">Código de barras:</span>{" "}
-            {product.barcode}
-          </p>
+          <div className="mt-2">
+            <Barcode
+              value={product.barcode}
+              height={40}
+              width={1.5}
+              fontSize={12}
+              displayValue={true} // mostra o número abaixo
+            />
+          </div>
         )}
       </div>
 

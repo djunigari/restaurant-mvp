@@ -31,34 +31,32 @@ export default function ProductListPage() {
 
   return (
     <MaxWidthWrapper>
-      <div className="p-4 space-y-8">
-        <h1 className="text-xl font-bold mb-4">Produtos</h1>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <FilterInput
-            value={inputValue}
-            typeFilter={typeFilter}
-            setTypeFilter={(type) => {
-              setInputValue("")
-              setFilter("")
-              setPageIndex(0)
-              setTypeFilter(type)
-            }}
-            onChange={setInputValue}
-            onSearch={() => {
-              setPageIndex(0) // opcional: volta pra página 1 ao pesquisar
-              setFilter(inputValue)
-            }}
-          />
-          <ProductAddDialog />
-        </div>
-        {/* Lista de produtos */}
-        <ProductListComponent
-          data={data.data}
-          totalPages={data.totalPages}
-          pageIndex={data.pageIndex}
-          onPageChange={(page) => setPageIndex(page)}
+      <h1 className="text-xl font-bold mb-4">Produtos</h1>
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <FilterInput
+          value={inputValue}
+          typeFilter={typeFilter}
+          setTypeFilter={(type) => {
+            setInputValue("")
+            setFilter("")
+            setPageIndex(0)
+            setTypeFilter(type)
+          }}
+          onChange={setInputValue}
+          onSearch={() => {
+            setPageIndex(0) // opcional: volta pra página 1 ao pesquisar
+            setFilter(inputValue)
+          }}
         />
+        <ProductAddDialog />
       </div>
+      {/* Lista de produtos */}
+      <ProductListComponent
+        data={data.data}
+        totalPages={data.totalPages}
+        pageIndex={data.pageIndex}
+        onPageChange={(page) => setPageIndex(page)}
+      />
     </MaxWidthWrapper>
   )
 }
@@ -113,8 +111,8 @@ export function FilterInput({
         className="w-full sm:w-auto sm:border-l-0 rounded-none"
       >
         <span className="sr-only">Pesquisar</span>
-        <span className="hidden sm:inline">Pesquisar</span>
-        <span className="sm:hidden">🔍</span>
+        <span>Pesquisar</span>
+        {/* <span className="sm:hidden">🔍</span> */}
       </Button>
     </div>
   )

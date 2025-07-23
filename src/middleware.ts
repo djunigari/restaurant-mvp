@@ -8,7 +8,7 @@ import { decrypt } from "./lib/auth/session"
 // const protectedRoutes = ["/", "/dashboard", "/orders/*"]
 const protectedRoutes = ["/*"]
 const publicRoutes = ["/login", "/signup"]
-const needCheckDevice = process.env.NEXT_PUBLIC_CHECK_DEVICE === "false"
+const needCheckDevice = process.env.NEXT_PUBLIC_CHECK_DEVICE
 
 function matchRoute(path: string, route: string) {
   if (route.endsWith("/*")) {

@@ -2,6 +2,7 @@
 
 import { Order } from "@/types/order"
 import { ChevronsUpDown } from "lucide-react"
+import Barcode from "react-barcode"
 import { Button } from "../ui/button"
 import {
   Collapsible,
@@ -36,10 +37,23 @@ export function ComandaOrderList({ order }: { order: Order }) {
           key={item.id}
           className="w-full flex flex-col p-2 border rounded"
         >
-          <div className="flex items-center justify-between gap-4">
-            <span className="font-semibold">
-              {item.quantity}x {item.product.name}
-            </span>
+          <div className="flex justify-between gap-4">
+            <div className="flex flex-col">
+              <span className="font-semibold">
+                {item.quantity}x {item.product.name}
+              </span>
+              {item.product.barcode && (
+                <div className="mt-2">
+                  <Barcode
+                    value={item.product.barcode}
+                    height={40}
+                    width={1.5}
+                    fontSize={12}
+                    displayValue={true} // mostra o número abaixo
+                  />
+                </div>
+              )}
+            </div>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon" className="size-8">
                 <ChevronsUpDown />

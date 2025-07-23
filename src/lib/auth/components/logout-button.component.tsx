@@ -3,12 +3,15 @@
 import { trpc } from "@/app/trpc/client"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
+import { redirect } from "next/navigation"
+
 import { toast } from "sonner"
 
 export default function LogoutButton({ classname }: { classname?: string }) {
   const logout = trpc.auth.logout.useMutation({
     onSuccess: () => {
       toast.success("Deslogado!")
+      redirect("/login")
     },
   })
 

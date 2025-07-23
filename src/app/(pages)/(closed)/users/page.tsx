@@ -31,46 +31,45 @@ export default function UserListPage() {
   return (
     <MaxWidthWrapper>
       {isLoading && <LoadingOverlay />}
-      <div className="p-4 space-y-8">
-        <h1 className="text-xl font-bold mb-4">Usuários</h1>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <FilterInput
-            value={inputValue}
-            typeFilter={typeFilter}
-            setTypeFilter={(type) => {
-              setInputValue("")
-              setFilter("")
-              setPageIndex(0)
-              setTypeFilter(type)
-            }}
-            onChange={setInputValue}
-            onSearch={() => {
-              setPageIndex(0) // opcional: volta pra página 1 ao pesquisar
-              setFilter(inputValue)
-            }}
-          />
-          <UserAddDialog />
-        </div>
 
-        {data ? (
-          data.data.length === 0 ? (
-            <div className="text-center text-gray-500">
-              Nenhum usuário encontrado.
-            </div>
-          ) : (
-            <UserListComponent
-              data={data.data || []}
-              totalPages={data.totalPages}
-              pageIndex={data.pageIndex}
-              onPageChange={(page) => setPageIndex(page)}
-            />
-          )
-        ) : (
+      <h1 className="text-xl font-bold mb-4">Usuários</h1>
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <FilterInput
+          value={inputValue}
+          typeFilter={typeFilter}
+          setTypeFilter={(type) => {
+            setInputValue("")
+            setFilter("")
+            setPageIndex(0)
+            setTypeFilter(type)
+          }}
+          onChange={setInputValue}
+          onSearch={() => {
+            setPageIndex(0) // opcional: volta pra página 1 ao pesquisar
+            setFilter(inputValue)
+          }}
+        />
+        <UserAddDialog />
+      </div>
+
+      {data ? (
+        data.data.length === 0 ? (
           <div className="text-center text-gray-500">
             Nenhum usuário encontrado.
           </div>
-        )}
-      </div>
+        ) : (
+          <UserListComponent
+            data={data.data || []}
+            totalPages={data.totalPages}
+            pageIndex={data.pageIndex}
+            onPageChange={(page) => setPageIndex(page)}
+          />
+        )
+      ) : (
+        <div className="text-center text-gray-500">
+          Nenhum usuário encontrado.
+        </div>
+      )}
     </MaxWidthWrapper>
   )
 }
@@ -124,8 +123,7 @@ function FilterInput({
         className="w-full sm:w-auto sm:border-l-0 rounded-none"
       >
         <span className="sm:sr-only">Pesquisar</span>
-        <span className="hidden sm:inline">Pesquisar</span>
-        <span className="sm:hidden">🔍</span>
+        <span>Pesquisar</span>
       </Button>
     </div>
   )
