@@ -1,18 +1,16 @@
 import { User } from "@/generated/prisma"
 import { SessionPayload } from "@/lib/auth/definitions"
 import { prisma } from "@/utils/prisma"
-import crypto from "crypto"
 import { SignJWT, jwtVerify } from "jose"
 import { cookies } from "next/headers"
 import "server-only"
+import { v4 as uuidv4 } from "uuid"
 
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
 
 export function generateRandomToken() {
-  return Array.from(crypto.getRandomValues(new Uint8Array(32)))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("")
+  return uuidv4() // Ex: "550e8400-e29b-41d4-a716-446655440000"
 }
 
 export async function encrypt(payload: SessionPayload) {
