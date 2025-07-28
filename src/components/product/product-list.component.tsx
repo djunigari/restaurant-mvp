@@ -22,7 +22,7 @@ export function ProductListComponent({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-2">
       {data.map((product) => (
         <ProductListItemComponent key={product.id} product={product} />
       ))}

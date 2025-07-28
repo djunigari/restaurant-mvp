@@ -1,8 +1,18 @@
 "use client"
 
 import { trpc } from "@/app/trpc/client"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Product } from "@/types/product"
-import Barcode from "react-barcode"
 import { toast } from "sonner"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
@@ -34,45 +44,55 @@ export function ProductListItemComponent({
   })
 
   function handleDelete() {
-    if (confirm("Tem certeza que deseja deletar este produto?")) {
-      deleteProduct.mutate(product.id)
-    }
+    deleteProduct.mutate(product.id)
   }
 
   return (
     <div className={`flex flex-col sm:flex-row border p-4 rounded shadow-sm`}>
       <div className="flex flex-col">
         <div className="flex items-center gap-2 mb-2">
-          <div className="flex items-center gap-2 mb-2">
-            <Badge variant={"default"}>{product.id}</Badge>
-            <span className="font-semibold">{product.name}</span>
-          </div>
-          <p className="text-sm text-gray-500">{product.description}</p>
-          <p className="font-semibold mt-2">{fmt.format(product.price)}</p>
+          <Badge variant={"default"}>{product.id}</Badge>
+          <span className="font-semibold">{product.name}</span>
         </div>
-        {product.barcode && (
-          <div className="mt-2">
-            <Barcode
-              value={product.barcode}
-              height={40}
-              width={1.5}
-              fontSize={12}
-              displayValue={true} // mostra o número abaixo
-            />
-          </div>
+        <p className="font-semibold mt-2">{fmt.format(product.price)}</p>
+        {product.barcode && <span>{product.barcode}</span>}
+        {product.description && (
+          <p className="text-sm text-gray-500">{product.description}</p>
         )}
       </div>
 
       <div className="flex gap-2 ml-auto">
         <ProductEditDialog product={product} />
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDelete}
-          disabled={deleteProduct.isPending}
-        >
-          {deleteProduct.isPending ? "Removendo..." : "Excluir"}
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={deleteProduct.isPending}
+            >
+              {deleteProduct.isPending ? "Removendo..." : "Excluir"}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tem certeza que deseja excluir o produto{" "}
+                <strong>{product.name}</strong>? Essa ação não poderá ser
+                desfeita.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => handleDelete()}
+                disabled={deleteProduct.isPending}
+              >
+                Confirmar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   )

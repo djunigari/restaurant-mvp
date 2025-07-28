@@ -1,11 +1,15 @@
 "use client"
 
+import MaxWidthWrapper from "@/components/template/MaxWidthWrapper"
 import Link from "next/link"
 
 export default function Home() {
+  // const { session } = useAuth()
+  // const isAdmin = session?.role === "ADMIN"
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <div className="flex flex-col gap-4">
+    <MaxWidthWrapper>
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 gap-4">
         <h1 className="text-2xl font-bold mb-8">Bem-vindo ao Sistema</h1>
 
         <Link href="/products">
@@ -26,12 +30,14 @@ export default function Home() {
           </button>
         </Link>
 
+        {/* {isAdmin && ( */}
         <Link href="/users">
           <button className="bg-orange-500 text-white px-6 py-3 rounded w-60">
             Usuários
           </button>
         </Link>
+        {/* )} */}
       </div>
-    </div>
+    </MaxWidthWrapper>
   )
 }

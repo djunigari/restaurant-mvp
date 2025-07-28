@@ -79,68 +79,68 @@ function FilterInput({
   isLoading?: boolean
 }) {
   return (
-    <div className="w-full flex flex-col sm:flex-row border rounded-md overflow-hidden shadow-sm">
-      <div className="flex">
-        <Select onValueChange={setTypeFilter} defaultValue={typeFilter}>
-          <SelectTrigger className="w-[100px] rounded-none border-none bg-zinc-100">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="border-l-0">
-            <SelectItem value="ID">ID</SelectItem>
-            <SelectItem value="Status">Status</SelectItem>
-          </SelectContent>
-        </Select>
+    <div className="w-full flex flex-col sm:flex-row sm:gap-0 border rounded-md overflow-hidden shadow-sm">
+      <Select onValueChange={setTypeFilter} defaultValue={typeFilter}>
+        <SelectTrigger className="w-full sm:w-[100px] rounded-none border-none bg-zinc-100">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent className="border-l-0">
+          <SelectItem value="ID">ID</SelectItem>
+          <SelectItem value="Status">Status</SelectItem>
+        </SelectContent>
+      </Select>
 
-        {typeFilter === "ID" ? (
-          <input
-            id="filter"
-            type="number"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="Filtrar por ID"
-            className="flex-1 outline-none px-2 py-1 border focus:ring-0"
-          />
-        ) : null}
+      {typeFilter === "ID" ? (
+        <input
+          id="filter"
+          type="number"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Filtrar por ID"
+          className="w-full px-3 py-2 h-9 border-none outline-none ring-0 focus:ring-0 focus:outline-none focus:border-none shadow-none"
+          autoComplete="off"
+        />
+      ) : null}
 
-        {typeFilter === "Status" && (
-          <div className="flex gap-4 items-center mx-2">
-            <label className="flex items-center gap-2">
-              <Checkbox
-                checked={value.includes("OPEN")}
-                onCheckedChange={(checked) => {
-                  let next = value.split(",").filter(Boolean)
-                  if (checked) {
-                    next.push("OPEN")
-                  } else {
-                    next = next.filter((v) => v !== "OPEN")
-                  }
-                  onChange(next.join(","))
-                }}
-              />
-              <span>Open</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <Checkbox
-                checked={value.includes("OCCUPIED")}
-                onCheckedChange={(checked) => {
-                  let next = value.split(",").filter(Boolean)
-                  if (checked) {
-                    next.push("OCCUPIED")
-                  } else {
-                    next = next.filter((v) => v !== "OCCUPIED")
-                  }
-                  onChange(next.join(","))
-                }}
-              />
-              <span>Occupied</span>
-            </label>
-          </div>
-        )}
-      </div>
+      {typeFilter === "Status" && (
+        <div className="flex gap-4 items-center mx-2 h-9">
+          <label className="flex items-center gap-2">
+            <Checkbox
+              checked={value.includes("OPEN")}
+              onCheckedChange={(checked) => {
+                let next = value.split(",").filter(Boolean)
+                if (checked) {
+                  next.push("OPEN")
+                } else {
+                  next = next.filter((v) => v !== "OPEN")
+                }
+                onChange(next.join(","))
+              }}
+            />
+            <span>Open</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <Checkbox
+              checked={value.includes("OCCUPIED")}
+              onCheckedChange={(checked) => {
+                let next = value.split(",").filter(Boolean)
+                if (checked) {
+                  next.push("OCCUPIED")
+                } else {
+                  next = next.filter((v) => v !== "OCCUPIED")
+                }
+                onChange(next.join(","))
+              }}
+            />
+            <span>Occupied</span>
+          </label>
+        </div>
+      )}
+
       <Button
         onClick={onSearch}
         variant={"secondary"}
-        className="border-l-0 rounded-none ml-auto"
+        className="w-full sm:w-auto sm:border-l-0 rounded-none"
         disabled={isLoading}
       >
         {isLoading ? "Carregando..." : "Filtrar"}

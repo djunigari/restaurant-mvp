@@ -3,6 +3,7 @@
 import { Order } from "@/generated/prisma"
 import { CheckCircle, Clock, XCircle } from "lucide-react"
 import Link from "next/link"
+import { Badge } from "../ui/badge"
 
 interface OrderListProps {
   orders: Order[]
@@ -26,13 +27,14 @@ export function OrderList({ orders, showLinks = true }: OrderListProps) {
           )}
 
           <div>
-            <p className="font-semibold">
+            <div className="flex gap-2 font-semibold">
+              <Badge>{order.comandaId}</Badge>
               {showLinks ? (
                 <Link href={`/orders/${order.id}`}>Pedido #{order.id}</Link>
               ) : (
                 <>Pedido #{order.id}</>
               )}
-            </p>
+            </div>
             <p className="text-sm text-gray-600">
               Criado: {new Date(order.createdAt).toLocaleString()} -{" "}
               {order.canceledAt

@@ -32,7 +32,7 @@ export default function ProductListPage() {
   return (
     <MaxWidthWrapper>
       <h1 className="text-xl font-bold mb-4">Produtos</h1>
-      <div className="flex flex-col gap-2 sm:flex-row">
+      <div className="flex flex-col gap-2 sm:flex-row mb-8">
         <FilterInput
           value={inputValue}
           typeFilter={typeFilter}
@@ -61,7 +61,7 @@ export default function ProductListPage() {
   )
 }
 
-export function FilterInput({
+function FilterInput({
   typeFilter = "Name",
   setTypeFilter,
   value,

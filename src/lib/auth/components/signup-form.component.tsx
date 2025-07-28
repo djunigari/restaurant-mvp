@@ -5,30 +5,38 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
-const SignupSchema = z.object({
-  name: z
-    .string()
-    .min(2, { message: "Name must be at least 2 characters long." })
-    .trim(),
-  email: z.string().email({ message: "Please enter a valid email." }).trim(),
-  password: z
-    .string()
-    .min(8, { message: "Be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-    .regex(/[0-9]/, { message: "Contain at least one number." })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: "Contain at least one special character.",
-    })
-    .trim(),
-})
+const SignupSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, { message: "Name must be at least 2 characters long." })
+      .trim(),
+    email: z.string().email({ message: "Please enter a valid email." }).trim(),
+    password: z
+      .string()
+      .min(8, { message: "Be at least 8 characters long" })
+      .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
+      .regex(/[0-9]/, { message: "Contain at least one number." })
+      .regex(/[^a-zA-Z0-9]/, {
+        message: "Contain at least one special character.",
+      })
+      .trim(),
+    confirmPassword: z.string().trim(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"], // Aplica o erro ao campo correto
+  })
 
 type SignupFormData = z.infer<typeof SignupSchema>
 
 export default function SignupForm() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -42,11 +50,13 @@ export default function SignupForm() {
     onSuccess: () => {
       toast.success("Conta criada com sucesso!")
       reset()
+      router.push("/")
     },
   })
 
   const onSubmit = (data: SignupFormData) => {
-    signup.mutate(data)
+    const { confirmPassword, ...userData } = data
+    signup.mutate(userData)
   }
 
   return (
@@ -80,6 +90,20 @@ export default function SignupForm() {
         />
         {errors.password && (
           <p className="text-sm text-red-500">{errors.password.message}</p>
+        )}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="confirmPassword">Confirm Password</Label>
+        <Input
+          id="confirmPassword"
+          type="password"
+          placeholder="******"
+          {...register("confirmPassword")}
+        />
+        {errors.confirmPassword && (
+          <p className="text-sm text-red-500">
+            {errors.confirmPassword.message}
+          </p>
         )}
       </div>
 

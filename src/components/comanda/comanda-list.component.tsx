@@ -19,7 +19,7 @@ export function ComandaListComponent({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap gap-4 px-1">
+      <div className="flex flex-wrap gap-1 px-1">
         {data.map((comanda) => (
           <Link
             href={`/comandas/${comanda.id}`}

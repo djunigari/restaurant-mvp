@@ -43,8 +43,10 @@ export function ComandaHistory({ id }: { id: number }) {
         </Button>
       </div>
       <div className="flex flex-col sm:flex-row gap-2 mb-4">
-        <DateTimePicker value={from} onChange={setFrom} />
-        <DateTimePicker value={to} onChange={setTo} />
+        <div className="flex gap-2 items-center">
+          <DateTimePicker value={from} onChange={setFrom} />
+          <DateTimePicker value={to} onChange={setTo} />
+        </div>
         <Button
           onClick={() => {
             setFilter({ ...filter, from: buildISO(from), to: buildISO(to) })
