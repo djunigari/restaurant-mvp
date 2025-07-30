@@ -41,7 +41,7 @@ async function checkDevice(req: NextRequest) {
     return { ok: false, reason: "Dispositivo não identificado" }
   }
   try {
-    const res = await fetch(`/api/check-device`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/check-device`, {
       headers: {
         "x-device-id": deviceId,
         "x-device-fingerprint": fingerprint,
