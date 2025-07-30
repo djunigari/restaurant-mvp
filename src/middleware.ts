@@ -40,22 +40,26 @@ async function checkDevice(req: NextRequest) {
     console.error("Dispositivo não identificado", { deviceId, fingerprint })
     return { ok: false, reason: "Dispositivo não identificado" }
   }
+  try {
+    const res = await fetch(`/api/check-device`, {
+      headers: {
+        "x-device-id": deviceId,
+        "x-device-fingerprint": fingerprint,
+        "user-agent": userAgent,
+        "x-forwarded-for": ip,
+      },
+    })
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/check-device`, {
-    headers: {
-      "x-device-id": deviceId,
-      "x-device-fingerprint": fingerprint,
-      "user-agent": userAgent,
-      "x-forwarded-for": ip,
-    },
-  })
+    if (!res.ok) {
+      console.error("Dispositivo não autorizado")
+      return { ok: false, reason: "Dispositivo não autorizado" }
+    }
 
-  if (!res.ok) {
-    console.error("Dispositivo não autorizado")
-    return { ok: false, reason: "Dispositivo não autorizado" }
+    return { ok: true }
+  } catch (error) {
+    console.error("Erro ao verificar dispositivo", error)
+    return { ok: false, reason: "Erro ao verificar dispositivo" }
   }
-
-  return { ok: true }
 }
 
 // 🔍 Função para carregar session
