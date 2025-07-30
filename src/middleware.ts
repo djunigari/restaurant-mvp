@@ -41,17 +41,14 @@ async function checkDevice(req: NextRequest) {
     return { ok: false, reason: "Dispositivo não identificado" }
   }
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/check-device`,
-    {
-      headers: {
-        "x-device-id": deviceId,
-        "x-device-fingerprint": fingerprint,
-        "user-agent": userAgent,
-        "x-forwarded-for": ip,
-      },
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/check-device`, {
+    headers: {
+      "x-device-id": deviceId,
+      "x-device-fingerprint": fingerprint,
+      "user-agent": userAgent,
+      "x-forwarded-for": ip,
     },
-  )
+  })
 
   if (!res.ok) {
     console.error("Dispositivo não autorizado")
