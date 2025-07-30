@@ -1,4 +1,5 @@
 import { verifySession } from "@/lib/auth/dal"
+import { Role } from "@/types/user"
 
 export async function GET() {
   // User authentication and role verification
@@ -11,7 +12,7 @@ export async function GET() {
   }
 
   // Check if the user has the 'admin' role
-  if (session.role !== "ADMIN") {
+  if (session.role !== Role.ADMIN) {
     // User is authenticated but does not have the right permissions
     return new Response(null, { status: 403 })
   }

@@ -7,5 +7,5 @@ export interface Order {
   createdAt: Date
   updatedAt: Date
   comandaId: number
-  items: OrderItem[]
+  items?: OrderItem[]
 }

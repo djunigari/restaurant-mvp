@@ -18,13 +18,14 @@ const fmt = new Intl.NumberFormat("ja-JP", {
 })
 
 export function ComandaOrderList({ order }: { order: Order }) {
-  const total = order.items.reduce((sum, item) => {
-    return sum + item.product.price * item.quantity
-  }, 0)
+  const total =
+    order.items?.reduce((sum, item) => {
+      return sum + item.product.price * item.quantity
+    }, 0) || 0
 
   if (!order) return <span>Carregando...</span>
 
-  if (order.items.length === 0) {
+  if (order.items?.length === 0) {
     return <span>Sem itens ainda.</span>
   }
 
@@ -32,7 +33,7 @@ export function ComandaOrderList({ order }: { order: Order }) {
     <div className="flex flex-col gap-2">
       <span className="font-bold">Total: {fmt.format(total)}</span>
 
-      {order?.items.map((item) => (
+      {order?.items?.map((item) => (
         <Collapsible
           key={item.id}
           className="w-full flex flex-col p-2 border rounded"

@@ -1,7 +1,7 @@
 "use client"
 
 import { trpc } from "@/app/trpc/client"
-import { User } from "@/generated/prisma"
+import { User } from "@/types/user"
 import { toast } from "sonner"
 import { Button } from "../ui/button"
 import { ResetPasswordDialog } from "./reset-password-dialog"

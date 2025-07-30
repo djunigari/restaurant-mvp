@@ -1,3 +1,4 @@
+import { Role } from "@/types/user"
 import { z } from "zod"
 
 export const SignupFormSchema = z.object({
@@ -32,6 +33,6 @@ export type SessionPayload = {
   userId: string
   sessionId: string
   sessionToken: string
-  role: "USER" | "ADMIN"
+  role: Role
   expiresAt: Date
 }

@@ -1,6 +1,9 @@
 import { Order } from "./order"
 
-export type ComandaStatus = "OPEN" | "OCCUPIED"
+export enum ComandaStatus {
+  OPEN = "OPEN",
+  OCCUPIED = "OCCUPIED",
+}
 
 export interface Comanda {
   id: number

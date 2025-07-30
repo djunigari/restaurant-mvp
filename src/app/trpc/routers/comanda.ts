@@ -1,3 +1,4 @@
+import { Comanda } from "@/types/comanda"
 import { z } from "zod"
 import { createTRPCRouter, protectedProcedure } from "../init"
 
@@ -48,7 +49,7 @@ export const comandaRouter = createTRPCRouter({
         ])
 
         return {
-          data,
+          data: data as Comanda[],
           totalCount,
           totalPages: Math.ceil(totalCount / pageSize),
           pageIndex,

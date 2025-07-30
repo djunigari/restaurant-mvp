@@ -1,5 +1,5 @@
-import { User } from "@/generated/prisma"
 import { SessionPayload } from "@/lib/auth/definitions"
+import { User } from "@/types/user"
 import { prisma } from "@/utils/prisma"
 import { SignJWT, jwtVerify } from "jose"
 import { cookies } from "next/headers"

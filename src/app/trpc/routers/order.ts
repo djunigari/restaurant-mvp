@@ -1,4 +1,5 @@
-import { ComandaStatus } from "@/generated/prisma"
+import { ComandaStatus } from "@/types/comanda"
+import { Order } from "@/types/order"
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 import { createTRPCRouter, protectedProcedure } from "../init"
@@ -48,7 +49,7 @@ export const orderRouter = createTRPCRouter({
         }),
       ])
 
-      return { totalCount, items }
+      return { totalCount, items: items as Order[] }
     }),
 
   getAllByComandaId: protectedProcedure

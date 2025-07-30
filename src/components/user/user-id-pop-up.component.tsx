@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { User } from "@/generated/prisma"
+import { User } from "@/types/user"
 import { Check, Clipboard } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"

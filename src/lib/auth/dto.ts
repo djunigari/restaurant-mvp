@@ -1,4 +1,4 @@
-import { User } from "@/generated/prisma"
+import { User } from "@/types/user"
 import { prisma } from "@/utils/prisma"
 import "server-only"
 import { getUser } from "./dal"

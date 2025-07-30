@@ -1,5 +1,6 @@
 import { verifySession } from "@/lib/auth/dal"
 import { createSession, deleteSession } from "@/lib/auth/session"
+import { Role } from "@/types/user"
 import { TRPCError } from "@trpc/server"
 import bcrypt from "bcrypt"
 import z from "zod"
@@ -41,7 +42,7 @@ export const authRouter = createTRPCRouter({
       })
 
       // cria session no DB e cookie
-      await createSession(user)
+      await createSession({ ...user, role: user.role as Role })
 
       return {
         user: {
@@ -80,7 +81,7 @@ export const authRouter = createTRPCRouter({
         })
       }
 
-      await createSession(user)
+      await createSession({ ...user, role: user.role as Role })
 
       return {
         user: {
@@ -139,7 +140,10 @@ export const authRouter = createTRPCRouter({
         ])
 
         return {
-          data,
+          data: data.map((user) => ({
+            ...user,
+            role: user.role as Role, // <- conversão explícita para seu tipo
+          })),
           totalCount,
           totalPages: Math.ceil(totalCount / pageSize),
           pageIndex,

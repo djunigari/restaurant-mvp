@@ -1,6 +1,6 @@
 "use client"
 
-import { Order } from "@/generated/prisma"
+import { Order } from "@/types/order"
 import { CheckCircle, Clock, XCircle } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../ui/badge"

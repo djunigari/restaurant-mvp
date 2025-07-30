@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { User } from "@/generated/prisma"
+import { User } from "@/types/user"
 import { useState } from "react"
 import { UserFormComponent } from "./user-form.component"
 

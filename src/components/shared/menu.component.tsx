@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useAuth } from "@/lib/auth/contexts/auth.context"
 import { cn } from "@/lib/utils"
+import { Role } from "@/types/user"
 import { Separator } from "@radix-ui/react-select"
 import { Menu as MenuIcon } from "lucide-react"
 import Link from "next/link"
@@ -18,7 +19,7 @@ export interface MenuProps {
 export default function Menu({ classname, mobile }: MenuProps) {
   const pathname = usePathname()
   const { session } = useAuth()
-  const isAdmin = session?.role === "ADMIN"
+  const isAdmin = session?.role === Role.ADMIN
 
   const links = [
     { href: "/comandas", label: "Comandas" },
